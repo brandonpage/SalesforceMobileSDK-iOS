@@ -10,9 +10,10 @@ dependencies:
   override:
     - gem install xcpretty
     - gem install fastlane
-    - npm install shelljs@0.7.0
     - brew update
     - brew install ant
+    - brew install npm
+    - npm install shelljs@0.7.0
        
 test:
   override:
