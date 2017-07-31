@@ -1,10 +1,11 @@
 machine:
   xcode:
-    version: 8.3
+    version: "8.3"
 
 dependencies:
   override:
     - gem install xcpretty
+    - gem install fastlane
     - npm install shelljs@0.7.0
     - brew update
     - brew install ant
