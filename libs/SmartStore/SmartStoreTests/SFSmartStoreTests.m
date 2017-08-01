@@ -59,7 +59,7 @@
 - (void) setUp
 {
     [super setUp];
-    [SFLogger sharedLogger].logLevel = SFLogLevelDebug;
+    [SFSDKSmartStoreLogger setLogLevel:DDLogLevelDebug];
     self.smartStoreUser = [self setUpSmartStoreUser];
     self.store = [SFSmartStore sharedStoreWithName:kTestSmartStoreName];
     self.globalStore = [SFSmartStore sharedGlobalStoreWithName:kTestSmartStoreName];
@@ -108,7 +108,7 @@
 - (void) testSqliteVersion
 {
     NSString* version = [NSString stringWithUTF8String:sqlite3_libversion()];
-    XCTAssertEqualObjects(version, @"3.11.0");
+    XCTAssertEqualObjects(version, @"3.15.2");
 }
 
 /**
@@ -1011,7 +1011,7 @@
 {
     for (SFSmartStoreDatabaseManager *dbMgr in @[ [SFSmartStoreDatabaseManager sharedManager], [SFSmartStoreDatabaseManager sharedGlobalManager] ]) {
         for (NSString *passcodeProviderName in @[kSFPasscodeProviderSHA256, kSFPasscodeProviderPBKDF2]) {
-            [self log:SFLogLevelDebug format:@"---Testing encryption using passcode provider '%@'.---", passcodeProviderName];
+            [SFSDKSmartStoreLogger d:[self class] format:@"---Testing encryption using passcode provider '%@'.---", passcodeProviderName];
             [SFPasscodeProviderManager setCurrentPasscodeProviderByName:passcodeProviderName];
             
             [[SFPasscodeManager sharedManager] changePasscode:nil];
@@ -1274,7 +1274,7 @@
 - (int)rowCountForTable:(NSString *)tableName db:(FMDatabase *)db
 {
     NSString *rowCountQuery = [NSString stringWithFormat:@"SELECT COUNT(*) FROM %@", tableName];
-    [self log:SFLogLevelDebug format:@"rowCountQuery: %@", rowCountQuery];
+    [SFSDKSmartStoreLogger d:[self class] format:@"rowCountQuery: %@", rowCountQuery];
     int rowCount = [db intForQuery:rowCountQuery];
     return rowCount;
 }

@@ -156,6 +156,10 @@ typedef void (^SFSnapshotViewControllerDismissalBlock)(UIViewController* snapsho
 @property (nonatomic, strong, nullable) NSArray<NSString*> *authScopes;
 
 /**
+ The Branded Login path configured for this application.
+ */
+@property (nonatomic, nullable, copy) NSString *brandLoginPath;
+/**
  Whether or not to attempt authentication as part of the launch process.  Default
  value is YES.
  */
@@ -230,13 +234,6 @@ typedef void (^SFSnapshotViewControllerDismissalBlock)(UIViewController* snapsho
  SalesforceMobileSDK/3.0.0 iPhone OS/8.1 (iPad) AppName/AppVersion *Native or Hybrid with optional qualifier* *Web-based user agent string*
  */
 @property (nonatomic, copy) SFSDKUserAgentCreationBlock userAgentString;
-
-/**
- + Gets or sets an instance of WKProcessPool that will be used during instantiation of any WKWebView instances
- + @discussion
- + Use the default instance or provide an instance to share state between WKWebView instances
- + */
-@property (nonatomic, strong) WKProcessPool *processPool;
 
 /**
  Launches the SDK.  This will verify an existing passcode the first time it runs, and attempt to

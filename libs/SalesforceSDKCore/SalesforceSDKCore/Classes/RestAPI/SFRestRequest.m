@@ -24,28 +24,34 @@
 
 #import "SFRestRequest+Internal.h"
 #import "SFRestAPI+Internal.h"
-#import "SalesforceSDKConstants.h"
 #import "SFJsonUtils.h"
+#import "NSString+SFAdditions.h"
 
 NSString * const kSFDefaultRestEndpoint = @"/services/data";
 
 @implementation SFRestRequest
 
-- (id)initWithMethod:(SFRestMethod)method path:(NSString *)path queryParams:(NSDictionary *)queryParams {
+- (id)initWithMethod:(SFRestMethod)method baseURL:(NSString *)baseURL path:(NSString *)path queryParams:(NSDictionary *)queryParams {
     self = [super init];
     if (self) {
         self.method = method;
+        self.baseURL = baseURL;
         self.path = path;
-        self.queryParams = queryParams;
+        self.queryParams = [queryParams mutableCopy];
         self.endpoint = kSFDefaultRestEndpoint;
         self.requiresAuthentication = YES;
+        self.parseResponse = YES;
         self.request = [[NSMutableURLRequest alloc] init];
     }
     return self;
 }
 
 + (instancetype)requestWithMethod:(SFRestMethod)method path:(NSString *)path queryParams:(NSDictionary *)queryParams {
-    return [[self alloc] initWithMethod:method path:path queryParams:queryParams];
+    return [[self alloc] initWithMethod:method baseURL:nil path:path queryParams:queryParams];
+}
+
++ (instancetype)requestWithMethod:(SFRestMethod)method baseURL:(NSString *)baseURL path:(NSString *)path queryParams:(nullable NSDictionary<NSString*, id> *)queryParams {
+    return [[self alloc] initWithMethod:method baseURL:baseURL path:path queryParams:queryParams];
 }
 
 - (NSString *)description {
@@ -88,11 +94,14 @@ NSString * const kSFDefaultRestEndpoint = @"/services/data";
 }
 
 - (void)setCustomRequestBodyData:(NSData *)bodyData contentType:(NSString *)contentType {
-    if (bodyData == nil) bodyData = [NSData data];
+    if (bodyData == nil) {
+        bodyData = [NSData data];
+    }
     NSInputStream *(^bodyStreamBlock)(void) = ^{
         return [NSInputStream inputStreamWithData:bodyData];
     };
     [self setCustomRequestBodyStream:bodyStreamBlock contentType:contentType];
+    [self setHeaderValue:[NSString stringWithFormat:@"%lu", (unsigned long)[bodyData length]] forHeaderName:@"Content-Length"];
 }
 
 - (void)setCustomRequestBodyStream:(NSInputStream* (^)(void))bodyInputStreamBlock contentType:(NSString *)contentType {
@@ -109,7 +118,7 @@ NSString * const kSFDefaultRestEndpoint = @"/services/data";
 - (NSURLRequest *)prepareRequestForSend {
     SFUserAccount *user = [SFUserAccountManager sharedInstance].currentUser;
     if (user) {
-        NSString *baseUrl = user.credentials.apiUrl.absoluteString;
+        NSString *baseUrl = self.baseURL ?: user.credentials.apiUrl.absoluteString;
 
         // Performs sanity checks on the path against the endpoint value.
         if (self.endpoint.length > 0 && [self.path hasPrefix:self.endpoint]) {
@@ -138,27 +147,28 @@ NSString * const kSFDefaultRestEndpoint = @"/services/data";
             [path deleteCharactersInRange:NSMakeRange(0, 1)];
         }
         [fullUrl appendString:path];
-        NSURLComponents *components = [NSURLComponents componentsWithString:fullUrl];
 
         // Adds query parameters to the request if any are set.
         if (self.queryParams) {
-            NSMutableArray<NSURLQueryItem *> *queryItems = [[NSMutableArray alloc] init];
-            for (NSString *key in self.queryParams.allKeys) {
-                if (key != nil) {
-                    NSURLQueryItem *query = [NSURLQueryItem queryItemWithName:key value:self.queryParams[key]];
-                    [queryItems addObject:query];
-                }
-            }
-            components.queryItems = queryItems;
+
+            // Not using NSUrlQueryItems because of https://stackoverflow.com/questions/41273994/special-characters-not-being-encoded-properly-inside-urlqueryitems
+            [fullUrl appendString:[SFRestRequest toQueryString:self.queryParams]];
         }
-        self.request = [[NSMutableURLRequest alloc] initWithURL:components.URL];
+        self.request = [[NSMutableURLRequest alloc] initWithURL:[[NSURL alloc] initWithString:fullUrl]];
 
         // Sets HTTP method on the request.
         [self.request setHTTPMethod:[SFRestRequest httpMethodFromSFRestMethod:self.method]];
 
-        // Sets OAuth Bearer token header on the request.
-        NSString *bearer = [NSString stringWithFormat:@"Bearer %@", user.credentials.accessToken];
-        [self.request setValue:bearer forHTTPHeaderField:@"Authorization"];
+        // Sets OAuth Bearer token header on the request (if not already present).
+        if (self.requiresAuthentication && ![self.request.allHTTPHeaderFields.allKeys containsObject:@"Authorization"]) {
+            NSString *bearer = [NSString stringWithFormat:@"Bearer %@", user.credentials.accessToken];
+            [self.request setValue:bearer forHTTPHeaderField:@"Authorization"];
+        }
+
+        // Sets Mobile SDK user agent on REST API requests, if it hasn't been set already elsewhere.
+        if (![self.request.allHTTPHeaderFields.allKeys containsObject:@"User-Agent"]) {
+            [self.request setValue:[SFRestAPI userAgentString] forHTTPHeaderField:@"User-Agent"];
+        }
 
         // Adds custom headers to the request if any are set.
         if (self.customHeaders) {
@@ -192,7 +202,7 @@ NSString * const kSFDefaultRestEndpoint = @"/services/data";
     if (!self.customHeaders) {
         self.customHeaders = [[NSMutableDictionary alloc] init];
     }
-    [self.customHeaders setValue:value forKey:name];
+    [self.customHeaders setObject:value forKey:name];
 }
 
 #pragma mark - Upload
@@ -275,4 +285,18 @@ NSString * const kSFDefaultRestEndpoint = @"/services/data";
     return restMethodName;
 }
 
++ (NSString *)toQueryString:(NSDictionary *)components {
+    NSMutableString* queryString = [NSMutableString new];
+    if (components) {
+        NSMutableArray *parts = [NSMutableArray array];
+        [queryString appendString:@"?"];
+        for (NSString *paramName in [components allKeys]) {
+            NSString* paramValue = components[paramName];
+            NSString *part = [NSString stringWithFormat:@"%@=%@", [paramName stringByURLEncoding], [paramValue stringByURLEncoding]];
+            [parts addObject:part];
+        }
+        [queryString appendString:[parts componentsJoinedByString:@"&"]];
+    }
+    return queryString;
+}
 @end

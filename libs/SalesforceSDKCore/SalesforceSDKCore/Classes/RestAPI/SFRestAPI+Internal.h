@@ -33,13 +33,9 @@
  declared in this file from app code, you're probably doing something wrong.
  */
 @interface SFRestAPI () <SFUserAccountManagerDelegate>
-{
-    SFUserAccountManager *_accountMgr;
-    SFAuthenticationManager *_authMgr;
-}
 
 /**
- * Active requests property
+ * Active requests property.
  */
 @property (nonatomic, readonly, strong) NSMutableSet *activeRequests;
 
