@@ -21,15 +21,19 @@ dependencies:
 
 test:
   override:
+    - >
+     if [ -n "${NIGHTLY_FULL_REGRESSION}" ]; then
+        fastlane CI;
+     fi
     - echo scheme="UnitTests"
     - ./build/pre-build
     - fastlane PR
   post:
-    - mkdir -p $CIRCLE_TEST_REPORTS/slather
-    - cp slather_output/cobertura.xml $CIRCLE_TEST_REPORTS/slather
-    - mkdir -p $CIRCLE_TEST_REPORTS/junit
-    - cp test_output/*.junit $CIRCLE_TEST_REPORTS/junit
+    - mkdir -p $CIRCLE_TEST_REPORTS/report
+    - cp slather_output/cobertura.xml $CIRCLE_TEST_REPORTS/report
 
 general:
   artifacts:
     - fastlane/report.xml
+    - test_output/report.junit
+    - test_output/report.html
