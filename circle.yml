@@ -23,7 +23,8 @@ test:
   override:
     - ./build/pre-build
     - >
-     if [ -n "${NIGHTLY_FULL_REGRESSION}" ]; then        
+     if [ -n "${NIGHTLY_FULL_REGRESSION}" ]; then
+        xcrun instruments -w "${IOS_DEVICE} (${IOS_VERSION)) [" || true        
         fastlane CI;
      else
         fastlane PR;
