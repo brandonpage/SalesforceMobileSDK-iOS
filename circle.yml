@@ -30,12 +30,9 @@ test:
         fastlane PR;
      fi
   post:
-    - mkdir -p $CIRCLE_TEST_REPORTS/junit
-    - cp slather_output/cobertura.xml $CIRCLE_TEST_REPORTS/junit
-    - cp test_output/report.junit $CIRCLE_TEST_REPORTS/junit
-    - cp test_output/report.html $CIRCLE_TEST_REPORTS/junit
+    - cp test_output/report.junit $CIRCLE_TEST_REPORTS/
+    - cp test_output/report.html $CIRCLE_TEST_REPORTS/
 
-#general:
-#  artifacts:
-#    - test_output/report.junit
-#    - test_output/report.html
+general:
+  artifacts:
+    - slather_output/cobertura.xml
