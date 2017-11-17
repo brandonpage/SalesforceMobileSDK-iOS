@@ -15,7 +15,8 @@
 	url = https://github.com/sammcewan/WYPopoverController
 [submodule "external/react-native"]
 	path = external/react-native
-	url = https://github.com/forcedotcom/react-native.git
+	url = https://github.com/brandonpage/react-native.git
+	branch = upgrade
 [submodule "external/CocoaLumberjack"]
 	path = external/CocoaLumberjack
 	url=https://github.com/forcedotcom/CocoaLumberjack.git
