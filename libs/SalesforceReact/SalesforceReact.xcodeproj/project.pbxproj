@@ -25,6 +25,7 @@
 		829DA2BD1C126C6A0040F5F1 /* SFSmartStoreReactBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F3618A51AA51E9900AE3A65 /* SFSmartStoreReactBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		829DA2BE1C126C700040F5F1 /* SFSmartSyncReactBridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FABF0691AA52E7E00D31E3F /* SFSmartSyncReactBridge.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		829DA2C11C126D320040F5F1 /* SalesforceReact.h in Headers */ = {isa = PBXBuildFile; fileRef = 829DA2C01C126D320040F5F1 /* SalesforceReact.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A3466BB01FCA223D002F55E2 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3466BAF1FCA223D002F55E2 /* libReact.a */; };
 		CE2B8D021CE9325E00C6FC6A /* SalesforceAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2B8D011CE9325E00C6FC6A /* SalesforceAnalytics.framework */; };
 		CE4712661EFC668A00D9E059 /* SFSDKReactLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = CE4712641EFC668A00D9E059 /* SFSDKReactLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CE4712671EFC668A00D9E059 /* SFSDKReactLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4712651EFC668A00D9E059 /* SFSDKReactLogger.m */; };
@@ -37,7 +38,6 @@
 		CE65C2431C0FD58000319E68 /* SmartStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE65C2421C0FD58000319E68 /* SmartStore.framework */; };
 		CE65C2451C0FD58800319E68 /* SalesforceSDKCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE65C2441C0FD58800319E68 /* SalesforceSDKCore.framework */; };
 		CE65C24B1C0FD59800319E68 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CE65C24A1C0FD59800319E68 /* libz.tbd */; };
-		CE6AB3DF1C10CEF90012125E /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FFEE6301BFE932100B7AA8A /* libReact.a */; };
 		FDCECBC6D61B39AC948CF0EC /* SalesforceReactSDKManager.h in Headers */ = {isa = PBXBuildFile; fileRef = FDCECA026A7650CEBD674735 /* SalesforceReactSDKManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FDCECD467E719BF14D34E80D /* SalesforceReactSDKManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FDCECE47B345156461C6A30D /* SalesforceReactSDKManager.m */; };
 /* End PBXBuildFile section */
@@ -70,6 +70,48 @@
 			proxyType = 2;
 			remoteGlobalIDString = 4F06AF2E1C499FD100F70798;
 			remoteInfo = SmartSyncTestApp;
+		};
+		A3466B9F1FCA1D58002F55E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FFEE62B1BFE932100B7AA8A /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 139D7ECE1E25DB7D00323FB7;
+			remoteInfo = "third-party";
+		};
+		A3466BA11FCA1D58002F55E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FFEE62B1BFE932100B7AA8A /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D383D3C1EBD27B6005632C8;
+			remoteInfo = "third-party-tvOS";
+		};
+		A3466BA31FCA1D58002F55E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FFEE62B1BFE932100B7AA8A /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 139D7E881E25C6D100323FB7;
+			remoteInfo = "double-conversion";
+		};
+		A3466BA51FCA1D58002F55E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FFEE62B1BFE932100B7AA8A /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D383D621EBD27B9005632C8;
+			remoteInfo = "double-conversion-tvOS";
+		};
+		A3466BA71FCA1D58002F55E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FFEE62B1BFE932100B7AA8A /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9936F3131F5F2E4B0010BF04;
+			remoteInfo = privatedata;
+		};
+		A3466BA91FCA1D58002F55E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4FFEE62B1BFE932100B7AA8A /* React.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 9936F32F1F5F2E5B0010BF04;
+			remoteInfo = "privatedata-tvOS";
 		};
 		CE47126F1EFC668B00D9E059 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -161,6 +203,7 @@
 		4FFEE62B1BFE932100B7AA8A /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../../external/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		829DA2C01C126D320040F5F1 /* SalesforceReact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SalesforceReact.h; sourceTree = "<group>"; };
 		82D0AB401C4980420081F833 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A3466BAF1FCA223D002F55E2 /* libReact.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libReact.a; path = "../../../../../Library/Developer/Xcode/DerivedData/SalesforceMobileSDK-evsgfgxrxlfukbgdhgdewrzhswoq/Build/Products/Debug-iphonesimulator/libReact.a"; sourceTree = "<group>"; };
 		CE2B8D011CE9325E00C6FC6A /* SalesforceAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SalesforceAnalytics.framework; path = "../../../../../../Library/Developer/Xcode/DerivedData/SalesforceMobileSDK-erwysdzugrhbsladkxhwtacrvgws/Build/Products/Debug-iphonesimulator/SalesforceAnalytics.framework"; sourceTree = "<group>"; };
 		CE4712641EFC668A00D9E059 /* SFSDKReactLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SFSDKReactLogger.h; path = Classes/SFSDKReactLogger.h; sourceTree = "<group>"; };
 		CE4712651EFC668A00D9E059 /* SFSDKReactLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SFSDKReactLogger.m; path = Classes/SFSDKReactLogger.m; sourceTree = "<group>"; };
@@ -180,13 +223,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3466BB01FCA223D002F55E2 /* libReact.a in Frameworks */,
 				CE2B8D021CE9325E00C6FC6A /* SalesforceAnalytics.framework in Frameworks */,
 				CE65C24B1C0FD59800319E68 /* libz.tbd in Frameworks */,
 				CE65C2451C0FD58800319E68 /* SalesforceSDKCore.framework in Frameworks */,
 				CE65C2431C0FD58000319E68 /* SmartStore.framework in Frameworks */,
 				CE65C23F1C0FD56C00319E68 /* SmartSync.framework in Frameworks */,
 				CE65C2411C0FD57200319E68 /* Foundation.framework in Frameworks */,
-				CE6AB3DF1C10CEF90012125E /* libReact.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,6 +308,7 @@
 		4FFEE5CE1BFE901E00B7AA8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A3466BAF1FCA223D002F55E2 /* libReact.a */,
 				CE2B8D011CE9325E00C6FC6A /* SalesforceAnalytics.framework */,
 				4FFEE62B1BFE932100B7AA8A /* React.xcodeproj */,
 				4FFEE5CF1BFE904100B7AA8A /* SmartSync.xcodeproj */,
@@ -298,6 +342,12 @@
 				CE4712781EFC668B00D9E059 /* libcxxreact.a */,
 				CE47127A1EFC668B00D9E059 /* libjschelpers.a */,
 				CE47127C1EFC668B00D9E059 /* libjschelpers.a */,
+				A3466BA01FCA1D58002F55E2 /* libthird-party.a */,
+				A3466BA21FCA1D58002F55E2 /* libthird-party.a */,
+				A3466BA41FCA1D58002F55E2 /* libdouble-conversion.a */,
+				A3466BA61FCA1D58002F55E2 /* libdouble-conversion.a */,
+				A3466BA81FCA1D58002F55E2 /* libprivatedata.a */,
+				A3466BAA1FCA1D58002F55E2 /* libprivatedata-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -414,6 +464,48 @@
 			fileType = wrapper.application;
 			path = SmartSyncTestApp.app;
 			remoteRef = 828917461C52B58D002F9981 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A3466BA01FCA1D58002F55E2 /* libthird-party.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libthird-party.a";
+			remoteRef = A3466B9F1FCA1D58002F55E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A3466BA21FCA1D58002F55E2 /* libthird-party.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libthird-party.a";
+			remoteRef = A3466BA11FCA1D58002F55E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A3466BA41FCA1D58002F55E2 /* libdouble-conversion.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libdouble-conversion.a";
+			remoteRef = A3466BA31FCA1D58002F55E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A3466BA61FCA1D58002F55E2 /* libdouble-conversion.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libdouble-conversion.a";
+			remoteRef = A3466BA51FCA1D58002F55E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A3466BA81FCA1D58002F55E2 /* libprivatedata.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libprivatedata.a;
+			remoteRef = A3466BA71FCA1D58002F55E2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A3466BAA1FCA1D58002F55E2 /* libprivatedata-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libprivatedata-tvOS.a";
+			remoteRef = A3466BA91FCA1D58002F55E2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		CE4712701EFC668B00D9E059 /* libReact.a */ = {
@@ -566,6 +658,7 @@
 					"$(inherited)",
 				);
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-lc++";
 			};
 			name = Debug;
 		};
@@ -600,6 +693,7 @@
 					"$(TARGET_BUILD_DIR)/Headers",
 					"$(inherited)",
 				);
+				OTHER_LDFLAGS = "-lc++";
 			};
 			name = Release;
 		};
@@ -666,6 +760,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "-lc++";
 				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.mobilesdk.SalesforceReact;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -718,6 +813,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-lc++";
 				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.mobilesdk.SalesforceReact;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
