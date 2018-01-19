@@ -1,0 +1,40 @@
+version: 2
+
+jobs:
+  build-and-test:
+    macos:
+      xcode: "9.2.0"
+    steps:
+      - checkout
+      - run: ./install
+      - restore_cache:
+          keys:
+            - v1-gems-{{ checksum "Gemfile.lock" }}
+            - v1-gems-
+      - run:
+          name: Install Dependencies
+          command:  |
+            bundle check || bundle install
+            npm install shelljs@0.7.0
+            ./build/pre-build
+          environment:
+            BUNDLE_JOBS: 4
+            BUNDLE_RETRY: 3
+            BUNDLE_PATH: vendor/bundle
+      - save_cache:
+          key: v1-gems-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - run:
+          name: Run tests
+          command: fastlane PR
+      - store_test_results:
+          path: test_output/
+          destination: Test-Results
+      - store_test_results:
+          path: clangReport/
+          destination: Static-Analysis
+      - store_test_results:
+          path: slather_output/
+          destination: Code-Coverage
+

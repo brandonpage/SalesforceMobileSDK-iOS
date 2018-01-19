@@ -1,25 +1,16 @@
 fastlane_require 'nokogiri'
 
-if !ENV["device"] or ENV["device"]==""
-  ENV["device"] = "iPhone 6"
-end
+ENV['device'] = 'iPhone 8' unless ENV.has_key?('device')
+ENV['scheme'] = 'UnitTests' unless ENV.has_key?('scheme')
+$Jenkins = ENV.has_key?('JENKINS_URL')
 
-if !ENV["scheme"] or ENV["scheme"]==""
-  ENV["scheme"] = "UnitTests"
-end
-
-$Jenkins = false
-if ENV["JENKINS_URL"]
-  $Jenkins = true
-end
-
-$GITPRAPI = "https://api.github.com/repos/forcedotcom/SalesforceMobileSDK-iOS/pulls/%s/files"
-$schemes = ["SalesforceAnalytics", "SalesforceHybridSDK", "SalesforceReact", "SalesforceSDKCore", "SmartStore", "SmartSync"]
+$GITPRAPI = 'https://api.github.com/repos/forcedotcom/SalesforceMobileSDK-iOS/pulls/%s/files'
+$schemes = ['SalesforceAnalytics', 'SalesforceHybridSDK', 'SalesforceReact', 'SalesforceSDKCore', 'SmartStore', 'SmartSync']
 $schemesWithUnitTests = Array.new($schemes)
 $schemesWithUnitTests.push("UnitTests")
 
-system("/usr/libexec/PlistBuddy -c \"add :ConnectHardwareKeyboard bool 0\" ~/Library/Preferences/com.apple.iphonesimulator.plist || /usr/libexec/PlistBuddy -c \"set :ConnectHardwareKeyboard 0\" ~/Library/Preferences/com.apple.iphonesimulator.plist")
-system("rm -r $HOME/Library/Developer/Xcode/DerivedData/SalesforceMobileSDK-*")
+system('/usr/libexec/PlistBuddy -c \"add :ConnectHardwareKeyboard bool 0\" ~/Library/Preferences/com.apple.iphonesimulator.plist || /usr/libexec/PlistBuddy -c \"set :ConnectHardwareKeyboard 0\" ~/Library/Preferences/com.apple.iphonesimulator.plist')
+system('rm -r $HOME/Library/Developer/Xcode/DerivedData/SalesforceMobileSDK-*')
 
 def combinePackagesOfXML(toFile, files)
   toDoc = Nokogiri::XML(File.open(toFile))
@@ -149,15 +140,10 @@ lane :PR do
     schemes = ENV["scheme"].split(',')
   end
 
-  if schemes.include?("SalesforceSDKCore") || schemes.include?("UnitTests")
-    testScheme("UnitTests")
-    doDanger
-  else
-    for scheme in schemes
-      testScheme(scheme)
-      doDanger
-    end
+  for scheme in schemes
+    testScheme(scheme)
   end
+  doDanger
 end
 
 lane :LCL do
