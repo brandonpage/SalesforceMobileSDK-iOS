@@ -33,9 +33,14 @@ jobs:
       - store_test_results:
           path: slather_output/
           destination: Code-Coverage
+      - run:
+          name: Codecov Uplaod
+          command: bash <(curl -s https://codecov.io/bash) -f slather_output/cobertura.xml -X coveragepy -X gcov -X xcode
 
 workflows:
   version: 2
-  build-test-adhoc:
+
+  build-test-pr:
     jobs:
       - build-and-test
+
