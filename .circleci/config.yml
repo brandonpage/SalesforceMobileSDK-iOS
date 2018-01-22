@@ -15,8 +15,8 @@ jobs:
           command:  |
             npm install shelljs@0.7.0
             ./install.sh
-            bundle install
             ./build/pre-build
+            cd .circleci/ && bundle install
       - save_cache:
           key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
           paths:
