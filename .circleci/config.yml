@@ -1,12 +1,11 @@
 version: 2
-
 jobs:
   build-and-test:
     macos:
       xcode: "9.2.0"
+    shell: /bin/bash --login -o pipefail
     steps:
       - checkout
-      - run: ./install
       - restore_cache:
           keys:
             - v1-gems-{{ checksum "Gemfile.lock" }}
@@ -14,13 +13,10 @@ jobs:
       - run:
           name: Install Dependencies
           command:  |
-            bundle check || bundle install
             npm install shelljs@0.7.0
+            ./install
+            bundle install
             ./build/pre-build
-          environment:
-            BUNDLE_JOBS: 4
-            BUNDLE_RETRY: 3
-            BUNDLE_PATH: vendor/bundle
       - save_cache:
           key: v1-gems-{{ checksum "Gemfile.lock" }}
           paths:
@@ -38,3 +34,8 @@ jobs:
           path: slather_output/
           destination: Code-Coverage
 
+workflows:
+  version: 2
+  build-test-adhoc:
+    jobs:
+      - build-and-test
