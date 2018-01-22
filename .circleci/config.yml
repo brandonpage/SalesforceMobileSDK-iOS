@@ -4,7 +4,7 @@ jobs:
     working_directory: ~/SalesforceMobileSDK-iOS
     macos:
       xcode: "9.2.0"
-    shell: /bin/bash --login -o pipefail
+    shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
       - restore_cache:
@@ -17,7 +17,8 @@ jobs:
             npm install shelljs@0.7.0
             ./install.sh
             ./build/pre-build
-            cd .circleci/ && bundle install
+            chruby 2.4.2
+            cd .circleci/ && bundle check || bundle install --path vendor/bundle
       - save_cache:
           key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
           paths:
