@@ -95,7 +95,8 @@ def testScheme(scheme)
           jenkins: $Jenkins,
           cobertura_xml: true,
           ignore: ["../*", "external/*"],
-          proj: "./libs/%s/%s.xcodeproj" %[oneScheme, oneScheme]
+          proj: "./libs/%s/%s.xcodeproj" %[oneScheme, oneScheme],
+          verbose: true
       )
     rescue => ex
       UI.error(ex)
