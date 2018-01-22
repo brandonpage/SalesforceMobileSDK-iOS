@@ -8,17 +8,17 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-gems-{{ checksum "Gemfile.lock" }}
+            - v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
             - v1-gems-
       - run:
           name: Install Dependencies
           command:  |
             npm install shelljs@0.7.0
-            ./install
+            ./install.sh
             bundle install
             ./build/pre-build
       - save_cache:
-          key: v1-gems-{{ checksum "Gemfile.lock" }}
+          key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
           paths:
             - vendor/bundle
       - run:
