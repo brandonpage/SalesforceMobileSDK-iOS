@@ -36,7 +36,9 @@ jobs:
 #            - ~/.gem/$ruby/$version
       - run:
           name: Run tests
-          command: fastlane PR
+          command:  |
+           fastlane -v
+           fastlane PR
       - store_test_results:
           path: test_output/
           destination: Test-Results
