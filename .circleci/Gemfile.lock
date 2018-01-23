@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.3.5)
+    CFPropertyList (2.3.6)
     activesupport (4.2.7.1)
       i18n (~> 0.7)
       json (~> 1.7, >= 1.7.7)
@@ -46,8 +46,8 @@ GEM
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.2.1)
-    excon (0.59.0)
-    faraday (0.13.1)
+    excon (0.60.0)
+    faraday (0.14.0)
       multipart-post (>= 1.2, < 3)
     faraday-cookie_jar (0.0.6)
       faraday (>= 0.7.4)
@@ -56,8 +56,8 @@ GEM
       faraday (~> 0.8)
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
-    fastimage (2.1.0)
-    fastlane (2.68.0)
+    fastimage (2.1.1)
+    fastlane (2.78.0)
       CFPropertyList (>= 2.3, < 3.0.0)
       addressable (>= 2.3, < 3.0.0)
       babosa (>= 1.0.2, < 2.0.0)
@@ -82,10 +82,11 @@ GEM
       public_suffix (~> 2.0.0)
       rubyzip (>= 1.1.0, < 2.0.0)
       security (= 0.1.3)
-      slack-notifier (>= 1.3, < 2.0.0)
+      slack-notifier (>= 2.0.0, < 3.0.0)
       terminal-notifier (>= 1.6.2, < 2.0.0)
       terminal-table (>= 1.4.5, < 2.0.0)
-      tty-screen (~> 0.6.2)
+      tty-screen (>= 0.6.3, < 1.0.0)
+      tty-spinner (>= 0.8.0, < 1.0.0)
       word_wrap (~> 1.0.0)
       xcodeproj (>= 1.5.2, < 2.0.0)
       xcpretty (>= 0.2.4, < 1.0.0)
@@ -99,7 +100,7 @@ GEM
       mime-types (~> 3.0)
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
-    googleauth (0.6.1)
+    googleauth (0.6.2)
       faraday (~> 0.12)
       jwt (>= 1.4, < 3.0)
       logging (~> 2.0)
@@ -107,7 +108,7 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
-    highline (1.7.8)
+    highline (1.7.10)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     httpclient (2.8.3)
@@ -126,7 +127,7 @@ GEM
     mini_magick (4.5.1)
     mini_portile2 (2.1.0)
     minitest (5.10.3)
-    multi_json (1.12.2)
+    multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
     nanaimo (0.2.3)
@@ -157,8 +158,8 @@ GEM
       faraday (~> 0.9)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
-    slack-notifier (1.5.1)
-    slather (2.4.3)
+    slack-notifier (2.3.2)
+    slather (2.4.4)
       CFPropertyList (~> 2.2)
       activesupport (>= 4.0.2, < 5)
       clamp (~> 0.6)
@@ -168,7 +169,10 @@ GEM
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
     thread_safe (0.3.6)
-    tty-screen (0.6.3)
+    tty-cursor (0.5.0)
+    tty-screen (0.6.4)
+    tty-spinner (0.8.0)
+      tty-cursor (>= 0.5.0)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
     uber (0.1.0)
@@ -177,20 +181,20 @@ GEM
     unf_ext (0.0.7.4)
     unicode-display_width (1.3.0)
     word_wrap (1.0.0)
-    xcodeproj (1.5.3)
+    xcodeproj (1.5.4)
       CFPropertyList (~> 2.3.3)
       claide (>= 1.0.2, < 2.0)
       colored2 (~> 3.1)
       nanaimo (~> 0.2.3)
-    xcov (1.2.0)
+    xcov (1.3.2)
       fastlane (>= 2.19.2, < 3.0.0)
       multipart-post
-      slack-notifier (~> 1.3)
+      slack-notifier (>= 2.0.0, < 3.0.0)
       terminal-table
       xcodeproj (~> 1.4)
     xcpretty (0.2.8)
       rouge (~> 2.0.7)
-    xcpretty-travis-formatter (0.0.4)
+    xcpretty-travis-formatter (1.0.0)
       xcpretty (~> 0.2, >= 0.0.7)
 
 PLATFORMS
@@ -200,10 +204,11 @@ DEPENDENCIES
   danger
   danger-junit
   danger-xcov
-  fastlane
+  fastlane (~> 2.78)
   plist
-  slather
-  xcov
+  slack-notifier (~> 2.3, >= 2.3.2)
+  slather (~> 2.4, >= 2.4.4)
+  xcov (~> 1.3, >= 1.3.2)
   xcpretty
 
 BUNDLED WITH
