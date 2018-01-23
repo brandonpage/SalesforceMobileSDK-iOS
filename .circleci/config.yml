@@ -20,7 +20,7 @@ jobs:
             chruby 2.4.2
             echo "Gem Home: ${GEM_HOME}"
             echo "Gem Path: ${GEM_PATH}"
-            cd .circleci/ && bundle check || bundle install
+            bundle check || bundle install
 #      - save_cache:
 #          key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
 #          paths:
