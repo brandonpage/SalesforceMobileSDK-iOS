@@ -27,7 +27,7 @@ jobs:
             gem install danger-xcov
             gem install danger-junit
             gem install plist
-            gem install CFPropertyList
+            gem install CFPropertyList -v 2.3.6
 #            gem install bundler
 #            bundle check || bundle install --path $GEM_PATH
 #      - save_cache:
