@@ -21,7 +21,7 @@ jobs:
             echo "Gem Home: ${GEM_HOME}"
             echo "Gem Path: ${GEM_PATH}"
             gem install bundler
-            bundle check || bundle install
+            bundle check || bundle install --path $GEM_PATH
 #      - save_cache:
 #          key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
 #          paths:
