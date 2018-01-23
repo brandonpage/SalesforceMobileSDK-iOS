@@ -1,5 +1,11 @@
 fastlane_require 'nokogiri'
 
+platform :ios do
+  before_all do
+    setup_circle_ci
+  end
+end
+
 ENV['device'] = 'iPhone 8' unless ENV.has_key?('device')
 ENV['scheme'] = 'UnitTests' unless ENV.has_key?('scheme')
 $Jenkins = ENV.has_key?('JENKINS_URL')
