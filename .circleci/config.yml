@@ -37,8 +37,14 @@ jobs:
       - run:
           name: Run tests
           command:  |
-           fastlane -v
-           fastlane PR
+            echo "Pre Gem Home: ${GEM_HOME}"
+            echo "Pre Gem Path: ${GEM_PATH}"
+            fastlane -v
+            chruby 2.4.2
+            echo "Post Gem Home: ${GEM_HOME}"
+            echo "Post Gem Path: ${GEM_PATH}"
+            fastlane -v
+            fastlane PR
       - store_test_results:
           path: test_output/
           destination: Test-Results
