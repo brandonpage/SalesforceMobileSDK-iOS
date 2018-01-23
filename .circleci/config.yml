@@ -7,10 +7,10 @@ jobs:
     shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
-            - v1-gems-
+#      - restore_cache:
+#          keys:
+#            - v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
+#            - v1-gems-
       - run:
           name: Install Dependencies
           command:  |
@@ -18,11 +18,13 @@ jobs:
             ./install.sh
             ./build/pre-build
             chruby 2.4.2
-            cd .circleci/ && bundle check || bundle install --path vendor/bundle
-      - save_cache:
-          key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
-          paths:
-            - vendor/bundle
+            echo "Gem Home: ${$GEM_HOME}"
+            echo "Gem Path: ${$GEM_PATH}"
+            cd .circleci/ && bundle check || bundle install 
+#      - save_cache:
+#          key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
+#          paths:
+#            - ~/.gem/$ruby/$version
       - run:
           name: Run tests
           command: fastlane PR
