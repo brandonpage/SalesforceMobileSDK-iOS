@@ -20,13 +20,14 @@ jobs:
             chruby 2.4.2
             echo "Gem Home: ${GEM_HOME}"
             echo "Gem Path: ${GEM_PATH}"
-            gem install --no-document fastlane -v 2.75 
+            gem install --no-document fastlane -v 2.75
             gem install slather
             gem install xcov
             gem install danger
             gem install danger-xcov
             gem install danger-junit
             gem install plist
+            gem isntall CFPropertyList
 #            gem install bundler
 #            bundle check || bundle install --path $GEM_PATH
 #      - save_cache:
