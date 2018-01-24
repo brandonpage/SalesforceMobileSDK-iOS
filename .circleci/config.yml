@@ -31,8 +31,14 @@ jobs:
           command:  |
             chruby 2.4.2
             cd .circleci && bundle exec fastlane PR
+            ls test_output/
+            ls clangReport/
+            ls slather_output/
       - store_test_results:
+          path: .circleci/test_output/report.junit
+      - store_artifacts:
           path: .circleci/test_output/
+          destination: Test-Results
       - store_artifacts:
           path: .circleci/clangReport/
           destination: Static-Analysis
