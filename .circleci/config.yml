@@ -31,11 +31,12 @@ jobs:
           command:  |
             chruby 2.4.2
             cd .circleci && bundle exec fastlane PR
+            mv test_output/report.junit test_output/report.xml
             ls test_output/
             ls clangReport/
             ls slather_output/
       - store_test_results:
-          path: .circleci/test_output/report.junit
+          path: .circleci/test_output/report.xml
       - store_artifacts:
           path: .circleci/test_output/
           destination: Test-Results
