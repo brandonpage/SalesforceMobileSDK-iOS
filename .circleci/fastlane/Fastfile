@@ -108,9 +108,9 @@ def testScheme(scheme)
   end
 
   system("mkdir -p ../slather_output")
-  desFile = "../slather_output/cobertura.xml"
+  desFile = "slather_output/cobertura.xml"
   system("rm #{desFile}") #remove existing file first
-  coberturaXmls = Dir["../../slather_output_temp/**/cobertura*.xml"]
+  coberturaXmls = Dir["../slather_output_temp/**/cobertura*.xml"]
   mergeFiles = Array.new
   for i in 0..coberturaXmls.size-1
     coberturaXml = coberturaXmls[i]
