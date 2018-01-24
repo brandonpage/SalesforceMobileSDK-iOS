@@ -32,11 +32,8 @@ jobs:
             chruby 2.4.2
             cd .circleci
             fastlane PR
-      - run:
-          command: mv test_output/report.junit test_output/report.xml
-          when: always
       - store_test_results:
-          path: test_output/report.xml
+          path: test_output/
       - store_artifacts:
           path: test_output/
           destination: Test-Results
