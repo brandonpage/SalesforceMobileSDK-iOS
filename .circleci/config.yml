@@ -33,12 +33,12 @@ jobs:
             cd .circleci
             fastlane PR
       - store_test_results:
-          path: test_output/
+          path: test_output
       - store_artifacts:
-          path: test_output/
+          path: test_output
           destination: Test-Results
       - store_artifacts:
-          path: clangReport/
+          path: clangReport
           destination: Static-Analysis
       - store_artifacts:
           path: slather_output/

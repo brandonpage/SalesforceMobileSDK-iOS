@@ -72,7 +72,7 @@ def testScheme(scheme)
       workspace: "SalesforceMobileSDK.xcworkspace",
       scheme: scheme,
       device: ENV["device"],
-      output_directory: "test_output/Unit_Test_Results",
+      output_directory: "test_output",
       code_coverage: true,
       fail_build: false,
       clean: true
