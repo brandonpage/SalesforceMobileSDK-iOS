@@ -201,7 +201,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  CFPropertyList (~> 2.3, >= 2.3.6)
   danger
   danger-junit
   danger-xcov

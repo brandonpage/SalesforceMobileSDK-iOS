@@ -1,3 +1,7 @@
+aliases:
+  - &gem-path /Users/distiller/.gem/ruby/2.4.2:/Users/distiller/.rubies/ruby-2.4.2/lib/ruby/gems/2.4.0
+  - &
+
 version: 2
 jobs:
   build-and-test:
@@ -7,10 +11,10 @@ jobs:
     shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
-#      - restore_cache:
-#          keys:
-#            - v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
-#            - v1-gems-
+      - restore_cache:
+          keys:
+            - v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
+            - v1-gems-
       - run:
           name: Install Dependencies
           command:  |
@@ -18,33 +22,16 @@ jobs:
             ./install.sh
             ./build/pre-build
             chruby 2.4.2
-            echo "Gem Home: ${GEM_HOME}"
-            echo "Gem Path: ${GEM_PATH}"
-            gem install --no-document fastlane -v 2.75
-            gem install slather
-            gem install xcov
-            gem install danger
-            gem install danger-xcov
-            gem install danger-junit
-            gem install plist
-            gem install CFPropertyList -v 2.3.6
-#            gem install bundler
-#            bundle check || bundle install --path $GEM_PATH
-#      - save_cache:
-#          key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
-#          paths:
-#            - ~/.gem/$ruby/$version
+            cd .circleci && bundle check || bundle install
+      - save_cache:
+          key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
+          paths:
+            - *gem-path
       - run:
           name: Run tests
           command:  |
-            echo "Pre Gem Home: ${GEM_HOME}"
-            echo "Pre Gem Path: ${GEM_PATH}"
-            fastlane -v
             chruby 2.4.2
-            echo "Post Gem Home: ${GEM_HOME}"
-            echo "Post Gem Path: ${GEM_PATH}"
-            fastlane -v
-            fastlane PR
+            bundle exec fastlane PR
       - store_test_results:
           path: test_output/
           destination: Test-Results
