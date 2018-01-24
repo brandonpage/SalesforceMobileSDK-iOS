@@ -34,10 +34,10 @@ jobs:
       - run:
           name: Run tests
           command:  |
-            ls test_output/
-            ls clangReport/
-            ls slather_output/
             ls .circleci/
+            ls .circleci/test_output/
+            ls .circleci/clangReport/
+            ls .circleci/slather_output/
             mv test_output/report.junit test_output/report.xml
           when: always
       - store_test_results:
