@@ -31,24 +31,29 @@ jobs:
           command:  |
             chruby 2.4.2
             cd .circleci && bundle exec fastlane PR
+      - run:
+          name: Run tests
+          command:  |
+            cd .circleci
             mv test_output/report.junit test_output/report.xml
             ls test_output/
             ls clangReport/
             ls slather_output/
+          when: always
       - store_test_results:
-          path: .circleci/test_output/report.xml
+          path: test_output/report.xml
       - store_artifacts:
-          path: .circleci/test_output/
+          path: test_output/
           destination: Test-Results
       - store_artifacts:
-          path: .circleci/clangReport/
+          path: clangReport/
           destination: Static-Analysis
       - store_artifacts:
-          path: .circleci/slather_output/
+          path: slather_output/
           destination: Code-Coverage
       - run:
           name: Codecov Uplaod
-          command: bash <(curl -s https://codecov.io/bash) -f .circleci/slather_output/cobertura.xml -X coveragepy -X gcov -X xcode
+          command: bash <(curl -s https://codecov.io/bash) -f slather_output/cobertura.xml -X coveragepy -X gcov -X xcode
           when: always
 
 workflows:
