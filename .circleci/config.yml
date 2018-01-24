@@ -34,7 +34,6 @@ jobs:
       - run:
           name: Run tests
           command:  |
-            cd .circleci
             mv test_output/report.junit test_output/report.xml
             ls test_output/
             ls clangReport/
