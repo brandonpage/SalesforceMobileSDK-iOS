@@ -30,7 +30,8 @@ jobs:
           name: Run tests
           command:  |
             chruby 2.4.2
-            cd .circleci && bundle exec fastlane PR
+            cd .circleci
+            fastlane PR
       - run:
           command: mv test_output/report.junit test_output/report.xml
           when: always
