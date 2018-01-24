@@ -36,7 +36,7 @@ def doDanger
     begin
       danger(
           danger_id: "CI-result",
-          dangerfile: "DangerFile",
+          dangerfile: ".circleci/DangerFile",
           github_api_token: ENV["DANGER_GITHUB_API_TOKEN"]
       )
     rescue => ex
@@ -50,7 +50,7 @@ def testScheme(scheme)
   begin
     xcodebuild(
         xcargs: "CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES",
-        workspace: "SalesforceMobileSDK.xcworkspace",
+        workspace: "../SalesforceMobileSDK.xcworkspace",
         scheme: scheme,
         sdk: "iphonesimulator",
         fail_build: false
@@ -69,7 +69,7 @@ def testScheme(scheme)
   end
 
   scan(
-      workspace: "SalesforceMobileSDK.xcworkspace",
+      workspace: "../SalesforceMobileSDK.xcworkspace",
       scheme: scheme,
       device: ENV["device"],
       output_directory: "test_output",
@@ -79,7 +79,7 @@ def testScheme(scheme)
   )
 
   xcov(
-      workspace: "SalesforceMobileSDK.xcworkspace",
+      workspace: "../SalesforceMobileSDK.xcworkspace",
       scheme: scheme,
       output_directory: "xcov_output",
       exclude_targets: "CocoaLumberjack.framework,SalesforceSDKCoreTestApp.app,SmartStoreTestApp.app,SmartSyncTestApp.app,SalesforceHybridSDKTestApp.app,SalesforceAnalyticsTestApp.app,RestAPIExplorer.app,AccountEditor.app,NoteSync.app,SmartSyncExplorerHybrid.app,SmartSyncExplorer.app,SmartSyncExplorerCommon.framework,RecentContactsTodayExtension.appex,Cordova.framework,SalesforceReact.framework"
@@ -98,8 +98,8 @@ def testScheme(scheme)
           html: true,
           jenkins: $Jenkins,
           cobertura_xml: true,
-          ignore: ["../*", "external/*"],
-          proj: "./libs/%s/%s.xcodeproj" %[oneScheme, oneScheme],
+          ignore: ["../../*", "../external/*"],
+          proj: "../libs/%s/%s.xcodeproj" %[oneScheme, oneScheme],
           verbose: true
       )
     rescue => ex
@@ -110,7 +110,7 @@ def testScheme(scheme)
   system("mkdir -p ../slather_output")
   desFile = "../slather_output/cobertura.xml"
   system("rm #{desFile}") #remove existing file first
-  coberturaXmls = Dir["../slather_output_temp/**/cobertura*.xml"]
+  coberturaXmls = Dir["../../slather_output_temp/**/cobertura*.xml"]
   mergeFiles = Array.new
   for i in 0..coberturaXmls.size-1
     coberturaXml = coberturaXmls[i]

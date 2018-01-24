@@ -1,6 +1,6 @@
 aliases:
   - &gem-path /Users/distiller/.gem/ruby/2.4.2:/Users/distiller/.rubies/ruby-2.4.2/lib/ruby/gems/2.4.0
-  
+
 version: 2
 jobs:
   build-and-test:
@@ -30,14 +30,13 @@ jobs:
           name: Run tests
           command:  |
             chruby 2.4.2
-            bundle exec fastlane PR
+            cd .circleci && bundle exec fastlane PR
       - store_test_results:
           path: test_output/
-          destination: Test-Results
-      - store_test_results:
+      - store_artifacts:
           path: clangReport/
           destination: Static-Analysis
-      - store_test_results:
+      - store_artifacts:
           path: slather_output/
           destination: Code-Coverage
       - run:
