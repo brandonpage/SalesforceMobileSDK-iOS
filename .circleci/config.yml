@@ -31,14 +31,7 @@ jobs:
           command:  |
             chruby 2.4.2
             cd .circleci && bundle exec fastlane PR
-      - run:
-          name: Run tests
-          command:  |
-            ls .circleci/
-            ls .circleci/test_output/
-            ls .circleci/clangReport/
-            ls .circleci/slather_output/
-            mv test_output/report.junit test_output/report.xml
+      - run: mv test_output/report.junit test_output/report.xml
           when: always
       - store_test_results:
           path: test_output/report.xml
