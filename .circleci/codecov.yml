@@ -1,0 +1,16 @@
+codecov:
+  branch: stable
+
+coverage:
+  precision: 2
+  round: down
+  range: "35...85"
+
+ignore:
+  - "shared"
+  - "hybrid"
+  - "native"
+  - "libs/**/*Test*"
+  - "slather*"
+  - ".circleci"
+  - "*.xccoverage.plist"

@@ -50,7 +50,7 @@ jobs:
           destination: Code-Coverage
       - run:
           name: Codecov Uplaod
-          command: bash <(curl -s https://codecov.io/bash) -f slather_output/cobertura.xml -X coveragepy -X gcov -X xcode
+          command: bash <(curl -s https://codecov.io/bash) -X gcov -X xcode
           when: always
 
 workflows:
