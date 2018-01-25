@@ -74,7 +74,6 @@ def testScheme(scheme)
       device: ENV["device"],
       output_directory: "test_output",
       code_coverage: true,
-      fail_build: false,
       clean: true
   )
 
