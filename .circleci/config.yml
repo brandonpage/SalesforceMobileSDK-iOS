@@ -23,6 +23,7 @@ jobs:
             chruby 2.4.2
             cd .circleci
             bundle check || bundle install
+            bundle update
       - save_cache:
           key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
           paths:
