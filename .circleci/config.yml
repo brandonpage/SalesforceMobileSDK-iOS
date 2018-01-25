@@ -21,7 +21,8 @@ jobs:
             ./install.sh
             ./build/pre-build
             chruby 2.4.2
-            cd .circleci && bundle check || bundle install
+            cd .circleci
+            bundle check || bundle install
       - save_cache:
           key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
           paths:
@@ -32,16 +33,19 @@ jobs:
             chruby 2.4.2
             cd .circleci
             fastlane PR
+      - run:
+          command: cp test_output/report.junit test_output/results.xml
+          when: always
       - store_test_results:
-          path: test_output
+          path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
       - store_artifacts:
-          path: test_output
+          path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
           destination: Test-Results
       - store_artifacts:
-          path: clangReport
+          path: /Users/distiller/SalesforceMobileSDK-iOS/clangReport
           destination: Static-Analysis
       - store_artifacts:
-          path: slather_output/
+          path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
           destination: Code-Coverage
       - run:
           name: Codecov Uplaod
