@@ -142,8 +142,7 @@ lane :PR do
   end
 
   if schemes.size == 0
-    #schemes = ENV["scheme"].split(',')
-    schemes = ['SalesforceAnalytics']
+    schemes = ENV["scheme"].split(',')
   end
 
   for scheme in schemes

@@ -46,7 +46,7 @@ jobs:
           path: /Users/distiller/SalesforceMobileSDK-iOS/clangReport
           destination: Static-Analysis
       - store_artifacts:
-          path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
+          path: /Users/distiller/SalesforceMobileSDK-iOS/slather_output/
           destination: Code-Coverage
       - run:
           name: Codecov Uplaod
