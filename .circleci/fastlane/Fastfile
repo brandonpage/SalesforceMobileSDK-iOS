@@ -6,6 +6,7 @@ end
 
 ENV['DEVICE'] = 'iPhone 8' unless ENV.has_key?('DEVICE')
 ENV['SCHEME'] = 'UnitTests' unless ENV.has_key?('SCHEME')
+ENV['IOS_VERSION'] = ' (11.2)' unless ENV.has_key?('IOS_VERSION')
 $Jenkins = ENV.has_key?('JENKINS_URL')
 
 $GITPRAPI = 'https://api.github.com/repos/forcedotcom/SalesforceMobileSDK-iOS/pulls/%s/files'
@@ -69,7 +70,7 @@ def testScheme(scheme)
       scan(
         workspace: "SalesforceMobileSDK.xcworkspace",
         scheme: scheme,
-        device: ENV["DEVICE"] + ENV["IOS_VERSION"],
+        device: ENV['DEVICE'] + ENV['IOS_VERSION'],
         output_directory: "test_output",
         code_coverage: true,
         clean: true
@@ -144,7 +145,7 @@ lane :PR do |options|
 
   # DELETE THIS
   if schemes.size == 0
-    schemes = $schemes
+    schemes = ENV['SCHEME'].split(',')
   end
 
   lib_to_test = options[:lib]
