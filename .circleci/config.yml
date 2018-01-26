@@ -16,9 +16,15 @@ aliases:
       ./install.sh
       ./build/pre-build
       chruby 2.4.2
+
+      echo $GEM_PATH
+      echo $GEM_HOME
+
       cd .circleci
       bundle check || bundle install
       bundle update
+
+      ls $GEM_HOME
 
   - &run-tests
     name: Run Tests
@@ -26,10 +32,6 @@ aliases:
       chruby 2.4.2
       cd .circleci
       fastlane ${FASTLANE_LANE}
-
-  - &change-result-extention
-    command: cp test_output/report.junit test_output/results.xml
-    when: always
 
   - &codecov
     name: Codecov Uplaod
@@ -54,7 +56,6 @@ jobs:
       - run: *install-dependecies
       - save_cache: *save-gem-cache
       - run: *run-tests
-      - run: *change-result-extention
       - store_test_results:
           path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
       - store_artifacts:
@@ -78,7 +79,6 @@ jobs:
       - run: *install-dependecies
       - save_cache: *save-gem-cache
       - run: *run-tests
-      - run: *change-result-extention
       - store_test_results:
           path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
       - store_artifacts:
@@ -102,7 +102,6 @@ jobs:
       - run: *install-dependecies
       - save_cache: *save-gem-cache
       - run: *run-tests
-      - run: *change-result-extention
       - store_test_results:
           path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
       - store_artifacts:
@@ -126,7 +125,6 @@ jobs:
       - run: *install-dependecies
       - save_cache: *save-gem-cache
       - run: *run-tests
-      - run: *change-result-extention
       - store_test_results:
           path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
       - store_artifacts:
@@ -150,7 +148,6 @@ jobs:
       - run: *install-dependecies
       - save_cache: *save-gem-cache
       - run: *run-tests
-      - run: *change-result-extention
       - store_test_results:
           path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
       - store_artifacts:
@@ -174,7 +171,6 @@ jobs:
       - run: *install-dependecies
       - save_cache: *save-gem-cache
       - run: *run-tests
-      - run: *change-result-extention
       - store_test_results:
           path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
       - store_artifacts:
@@ -201,7 +197,6 @@ jobs:
     - run: *install-dependecies
     - save_cache: *save-gem-cache
     - run: *run-tests
-    - run: *change-result-extention
     - store_test_results:
         path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
     - store_artifacts:
@@ -227,7 +222,6 @@ jobs:
     - run: *install-dependecies
     - save_cache: *save-gem-cache
     - run: *run-tests
-    - run: *change-result-extention
     - store_test_results:
         path: /Users/distiller/SalesforceMobileSDK-iOS/test_output/
     - store_artifacts:

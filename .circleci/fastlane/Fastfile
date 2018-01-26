@@ -79,6 +79,8 @@ def testScheme(scheme)
     rescue => ex
       UI.error(ex)
     ensure
+      system('cp test_output/report.junit test_output/results.xml')
+
       xcov(
           workspace: "SalesforceMobileSDK.xcworkspace",
           scheme: scheme,
