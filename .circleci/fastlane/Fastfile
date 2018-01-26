@@ -53,8 +53,6 @@ def testScheme(scheme)
         scheme: scheme,
         sdk: "iphonesimulator",
     )
-  rescue => ex
-    UI.error(ex)
   ensure
     #move clangReports to one folder
     system("mkdir -p ../clangReport/StaticAnalyzer")
@@ -76,8 +74,6 @@ def testScheme(scheme)
           code_coverage: true,
           clean: true
         )
-    rescue => ex
-      UI.error(ex)
     ensure
       system('cp ../test_output/report.junit ../test_output/results.xml')
 
