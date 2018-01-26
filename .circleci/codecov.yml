@@ -11,6 +11,3 @@ ignore:
   - "hybrid"
   - "native"
   - "libs/**/*Test*"
-  - "slather*"
-  - "./.circleci"
-  - "*.xccoverage.plist"

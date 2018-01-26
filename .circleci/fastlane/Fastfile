@@ -53,7 +53,6 @@ def testScheme(scheme)
         workspace: "SalesforceMobileSDK.xcworkspace",
         scheme: scheme,
         sdk: "iphonesimulator",
-        fail_build: false
     )
   rescue => ex
     UI.error(ex)
@@ -143,7 +142,7 @@ lane :PR do
 
   if schemes.size == 0
     #schemes = ENV["scheme"].split(',')
-    schemes = ['SalesforceAnalytics']
+    schemes = $schemes
   end
 
   for scheme in schemes
