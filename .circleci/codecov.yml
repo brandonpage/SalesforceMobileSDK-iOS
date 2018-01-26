@@ -12,5 +12,5 @@ ignore:
   - "native"
   - "libs/**/*Test*"
   - "slather*"
-  - ".circleci"
+  - "./.circleci"
   - "*.xccoverage.plist"
