@@ -10,4 +10,6 @@ ignore:
   - "shared"
   - "hybrid"
   - "native"
-  - "libs/**/*Test*"
+  - "libs/**/*Test*/*"
+  - "libs/SmartSync/SmartSyncTests"
+  - "libs/SmartSync/SmartSyncTestApp"
