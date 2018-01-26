@@ -1,13 +1,13 @@
 aliases:
   - &save-gem-cache
-    key: v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
+    key: v2-gems-{{ checksum ".circleci/Gemfile.lock" }}
     paths:
       - /Users/distiller/.gem/ruby/2.4.2:/Users/distiller/.rubies/ruby-2.4.2/lib/ruby/gems/2.4.0
 
   - &restore-gem-cache
     keys:
-      - v1-gems-{{ checksum ".circleci/Gemfile.lock" }}
-      - v1-gems-
+      - v2-gems-{{ checksum ".circleci/Gemfile.lock" }}
+      - v2-gems-
 
   - &install-dependecies
     name: Install Dependencies
@@ -21,6 +21,7 @@ aliases:
       bundle update
 
   - &run-tests
+    name: Run Tests
     command:  |
       chruby 2.4.2
       cd .circleci

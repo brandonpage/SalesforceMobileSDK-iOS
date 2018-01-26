@@ -11,5 +11,3 @@ ignore:
   - "hybrid"
   - "native"
   - "libs/**/*Test*/*"
-  - "libs/SmartSync/SmartSyncTests"
-  - "libs/SmartSync/SmartSyncTestApp"

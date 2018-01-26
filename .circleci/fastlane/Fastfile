@@ -66,6 +66,7 @@ def testScheme(scheme)
     system("mv ../libs/SmartSync/clangReport/StaticAnalyzer/SmartSync ../clangReport/StaticAnalyzer/")
   end
 
+  next if scheme = 'SalesforceReact'
   begin
       scan(
         workspace: "SalesforceMobileSDK.xcworkspace",
