@@ -1,13 +1,14 @@
 aliases:
   - &save-gem-cache
-    key: v2-gems-{{ checksum ".circleci/Gemfile.lock" }}
+    key: v3-gems-{{ checksum ".circleci/Gemfile.lock" }}
     paths:
-      - /Users/distiller/.gem/ruby/2.4.2:/Users/distiller/.rubies/ruby-2.4.2/lib/ruby/gems/2.4.0
+      - /Users/distiller/.gem/ruby/2.4.2
+      - /Users/distiller/.rubies/ruby-2.4.2/lib/ruby/gems/2.4.0
 
   - &restore-gem-cache
     keys:
-      - v2-gems-{{ checksum ".circleci/Gemfile.lock" }}
-      - v2-gems-
+      - v3-gems-{{ checksum ".circleci/Gemfile.lock" }}
+      - v3-gems-
 
   - &install-dependecies
     name: Install Dependencies
@@ -16,15 +17,9 @@ aliases:
       ./install.sh
       ./build/pre-build
       chruby 2.4.2
-
-      echo $GEM_PATH
-      echo $GEM_HOME
-
       cd .circleci
       bundle check || bundle install
       bundle update
-
-      ls $GEM_HOME
 
   - &run-tests
     name: Run Tests
