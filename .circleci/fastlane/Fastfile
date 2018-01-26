@@ -145,10 +145,11 @@ lane :PR do |options|
 
   # DELETE THIS
   if schemes.size == 0
-    schemes = ENV['SCHEME'].split(',')
+    schemes = $schemes
   end
 
   lib_to_test = options[:lib]
+  puts lib_to_test
   if lib_to_test.nil?
     # The old Jenkins way
     for scheme in schemes
