@@ -143,11 +143,6 @@ lane :PR do |options|
     puts "schemes:" + schemes.to_a().join(",")
   end
 
-  # DELETE THIS
-  if schemes.size == 0
-    schemes = $schemes
-  end
-
   lib_to_test = options[:lib]
   puts lib_to_test
   if lib_to_test.nil?
