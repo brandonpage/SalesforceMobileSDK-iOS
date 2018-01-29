@@ -1,3 +1,9 @@
+
+
+
+
+
+
 /*
  SFSDKIDPAuthClient.m
  SalesforceSDKCore
@@ -49,7 +55,15 @@
 
 - (instancetype) initWithConfig:(SFSDKOAuthClientConfig *)config {
     self = [super initWithConfig:config];
-    return self;
+self = [super initWithConfig:config];
+self = [super initWithConfig:config];
+self = [super initWithConfig:config];
+self = [super initWithConfig:config];
+self = [super initWithConfig:config];
+self = [super initWithConfig:config];
+self = [super initWithConfig:config];
+self = [super initWithConfig:config]; 
+   return self;
 }
 
 - (SFSDKWindowContainer *) authWindow {
