@@ -80,7 +80,7 @@ def test_scheme(scheme)
         clean: true
     )
   ensure
-    system('cp ../test_output/report.junit ../test_output/results.xml')
+    system("cp ../test_output/report.junit ../test_output/#{scheme}/results.xml")
   end
 end
 
