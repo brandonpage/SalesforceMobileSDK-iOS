@@ -80,7 +80,11 @@ def test_scheme(scheme)
         clean: true
     )
   ensure
-    system("cp ../../test_output/report.junit ../../test_output/#{scheme}_results.xml")
+    puts "pwd: " + `pwd`
+    puts "ls: " + `ls ../`
+    outs "ls test_output: " + `ls ../test_output`
+    system("mv ../test_output/report.junit ../test_output/#{scheme}_results.xml")
+    system("mv ../test_output/report.html ../test_output/#{scheme}_results.html")
   end
 end
 
