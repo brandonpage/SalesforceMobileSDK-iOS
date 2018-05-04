@@ -82,7 +82,7 @@ def test_scheme(scheme)
   ensure
     puts "pwd: " + `pwd`
     puts "ls: " + `ls ../`
-    outs "ls test_output: " + `ls ../test_output`
+    puts "ls test_output: " + `ls ../test_output`
     system("mv ../test_output/report.junit ../test_output/#{scheme}_results.xml")
     system("mv ../test_output/report.html ../test_output/#{scheme}_results.html")
   end
