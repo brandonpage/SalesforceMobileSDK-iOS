@@ -44,12 +44,6 @@
       <FileRef
          location = "group:libs/SmartSync/SmartSync.xcodeproj">
       </FileRef>
-      <FileRef
-         location = "group:libs/SalesforceHybridSDK/SalesforceHybridSDK.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:libs/SalesforceReact/SalesforceReact.xcodeproj">
-      </FileRef>
    </Group>
    <Group
       location = "container:"
@@ -59,19 +53,6 @@
       </FileRef>
       <FileRef
          location = "group:native/SampleApps/SmartSyncExplorer/SmartSyncExplorer.xcodeproj">
-      </FileRef>
-   </Group>
-   <Group
-      location = "container:"
-      name = "HybridSamples">
-      <FileRef
-         location = "group:hybrid/SampleApps/AccountEditor/AccountEditor.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:hybrid/SampleApps/NoteSync/NoteSync.xcodeproj">
-      </FileRef>
-      <FileRef
-         location = "group:hybrid/SampleApps/SmartSyncExplorerHybrid/SmartSyncExplorerHybrid.xcodeproj">
       </FileRef>
    </Group>
    <Group
