@@ -54,6 +54,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A3CF2AC92149C5BC00E816DB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B7DA7B401FCDECA70098C1EA /* PromiseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 633027EA203CC0060037E136;
+			remoteInfo = PMKDeprecatedTests;
+		};
+		A3CF2ACB2149C5BC00E816DB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B7DA7B401FCDECA70098C1EA /* PromiseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C0244E622047A6CB00ACB4AC;
+			remoteInfo = "PMKJSA+Tests";
+		};
 		B7CFC4491FD0462A0013534D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B7DA7AB21FCDE08E0098C1EA /* Project object */;
@@ -137,13 +151,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 630019221D596292003B4E30;
 			remoteInfo = PMKCoreTests;
-		};
-		B7DA7B501FCDECA70098C1EA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B7DA7B401FCDECA70098C1EA /* PromiseKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6314112F1D5978D700E24B9E;
-			remoteInfo = PMKDispatchTests;
 		};
 		B7DA7B521FCDECC40098C1EA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -372,7 +379,8 @@
 				B7DA7B4B1FCDECA70098C1EA /* PMKA+Tests.xctest */,
 				B7DA7B4D1FCDECA70098C1EA /* PMKBridgeTests.xctest */,
 				B7DA7B4F1FCDECA70098C1EA /* PMKCoreTests.xctest */,
-				B7DA7B511FCDECA70098C1EA /* PMKDispatchTests.xctest */,
+				A3CF2ACA2149C5BC00E816DB /* PMKDeprecatedTests.xctest */,
+				A3CF2ACC2149C5BC00E816DB /* PMKJSA+Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -467,16 +475,18 @@
 				TargetAttributes = {
 					B7DA7ABA1FCDE08E0098C1EA = {
 						CreatedOnToolsVersion = 9.1;
-						LastSwiftMigration = 0910;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Manual;
 					};
 					B7DA7AC31FCDE08F0098C1EA = {
 						CreatedOnToolsVersion = 9.1;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Manual;
 						TestTargetID = B7DA7AFA1FCDE6320098C1EA;
 					};
 					B7DA7AFA1FCDE6320098C1EA = {
 						CreatedOnToolsVersion = 9.1;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Keychain = {
@@ -517,6 +527,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		A3CF2ACA2149C5BC00E816DB /* PMKDeprecatedTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = PMKDeprecatedTests.xctest;
+			remoteRef = A3CF2AC92149C5BC00E816DB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A3CF2ACC2149C5BC00E816DB /* PMKJSA+Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "PMKJSA+Tests.xctest";
+			remoteRef = A3CF2ACB2149C5BC00E816DB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		B7DA7AEB1FCDE2540098C1EA /* SmartSync.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -571,13 +595,6 @@
 			fileType = wrapper.cfbundle;
 			path = PMKCoreTests.xctest;
 			remoteRef = B7DA7B4E1FCDECA70098C1EA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B7DA7B511FCDECA70098C1EA /* PMKDispatchTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = PMKDispatchTests.xctest;
-			remoteRef = B7DA7B501FCDECA70098C1EA /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

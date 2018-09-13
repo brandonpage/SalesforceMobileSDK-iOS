@@ -37,6 +37,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A3AB47892149C208007D0A96 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B79F07B120EA93D800BC7D6F /* PromiseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 633027EA203CC0060037E136;
+			remoteInfo = PMKDeprecatedTests;
+		};
+		A3AB478B2149C208007D0A96 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B79F07B120EA93D800BC7D6F /* PromiseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C0244E622047A6CB00ACB4AC;
+			remoteInfo = "PMKJSA+Tests";
+		};
 		B79F06D620EA930500BC7D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B79F06D020EA930500BC7D6F /* SalesforceSwiftSDK.xcodeproj */;
@@ -331,13 +345,6 @@
 			remoteGlobalIDString = 630019221D596292003B4E30;
 			remoteInfo = PMKCoreTests;
 		};
-		B79F07C120EA93D800BC7D6F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B79F07B120EA93D800BC7D6F /* PromiseKit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6314112F1D5978D700E24B9E;
-			remoteInfo = PMKDispatchTests;
-		};
 		B79F07C520EA93FA00BC7D6F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B79F077E20EA93D100BC7D6F /* Lumberjack.xcodeproj */;
@@ -515,7 +522,8 @@
 				B79F07BC20EA93D800BC7D6F /* PMKA+Tests.xctest */,
 				B79F07BE20EA93D800BC7D6F /* PMKBridgeTests.xctest */,
 				B79F07C020EA93D800BC7D6F /* PMKCoreTests.xctest */,
-				B79F07C220EA93D800BC7D6F /* PMKDispatchTests.xctest */,
+				A3AB478A2149C208007D0A96 /* PMKDeprecatedTests.xctest */,
+				A3AB478C2149C208007D0A96 /* PMKJSA+Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -652,6 +660,7 @@
 				TargetAttributes = {
 					B7CEA6EE20B7105E007D0564 = {
 						CreatedOnToolsVersion = 9.3.1;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -704,6 +713,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		A3AB478A2149C208007D0A96 /* PMKDeprecatedTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = PMKDeprecatedTests.xctest;
+			remoteRef = A3AB47892149C208007D0A96 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		A3AB478C2149C208007D0A96 /* PMKJSA+Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "PMKJSA+Tests.xctest";
+			remoteRef = A3AB478B2149C208007D0A96 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		B79F06D720EA930500BC7D6F /* SalesforceSwiftSDK.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -977,13 +1000,6 @@
 			remoteRef = B79F07BF20EA93D800BC7D6F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		B79F07C220EA93D800BC7D6F /* PMKDispatchTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = PMKDispatchTests.xctest;
-			remoteRef = B79F07C120EA93D800BC7D6F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -1180,13 +1196,14 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4PZ44KB26X;
 				INFOPLIST_FILE = RestAPIExplorer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.mobilesdk.RestAPIExplorer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.mobilesdk.RestAPIExplore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1199,13 +1216,14 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4PZ44KB26X;
 				INFOPLIST_FILE = RestAPIExplorer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.mobilesdk.RestAPIExplorer;
+				PRODUCT_BUNDLE_IDENTIFIER = com.salesforce.mobilesdk.RestAPIExplore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

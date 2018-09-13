@@ -98,7 +98,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7DF4D2D91472E238005CE144"
+               BlueprintIdentifier = "B7CEA6EE20B7105E007D0564"
                BuildableName = "RestAPIExplorer.app"
                BlueprintName = "RestAPIExplorer"
                ReferencedContainer = "container:native/SampleApps/RestAPIExplorer/RestAPIExplorer.xcodeproj">
