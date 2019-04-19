@@ -99,6 +99,8 @@ static CGFloat      const kSFViewBoarderWidth                  = 1.0f;
     self.passcodeTextView.delegate = self;
     self.passcodeTextView.layer.borderWidth = kSFViewBoarderWidth;
     self.passcodeTextView.accessibilityIdentifier = @"passcodeTextField";
+    self.passcodeTextView.accessibilityLabel = [SFSDKResourceUtils localizedString:@"accesibilityPasscodeField"];
+    self.passcodeTextView.secureTextEntry = YES;
     [self.passcodeTextView clearPasscode];
     [self.view addSubview:self.passcodeTextView];
     
@@ -130,6 +132,7 @@ static CGFloat      const kSFViewBoarderWidth                  = 1.0f;
     }
     
     [self layoutSubviews];
+    UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, self.passcodeInstructionsLabel.text);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -181,11 +184,21 @@ static CGFloat      const kSFViewBoarderWidth                  = 1.0f;
     [self.passcodeInstructionsLabel setFont:self.viewConfig.instructionFont];
     [self.passcodeInstructionsLabel setHidden:NO];
     [self.passcodeTextView setHidden:NO];
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.passcodeInstructionsLabel.text);
     [self.passcodeTextView refreshView];
 }
 
 #pragma mark - UITextFieldDelegate
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)rString {
+    
+    // This fixes deleting if VoiceOver is on.
+    if (UIAccessibilityIsVoiceOverRunning() && [rString isEqualToString:@""]) {
+        [self.passcodeTextView deleteBackward];
+        
+        NSMutableString *text = [[NSMutableString alloc] initWithString:self.passcodeTextView.text];
+        [text deleteCharactersInRange:NSMakeRange([text length]-1, 1)];
+        [self.passcodeTextView setText:self.passcodeTextView.passcodeInput];
+    }
     
     // Check if input is an actual int
     if (rString.intValue == 0 && ![rString isEqualToString:@"0"]) {
@@ -207,6 +220,7 @@ static CGFloat      const kSFViewBoarderWidth                  = 1.0f;
                 [self.passcodeTextView clearPasscode];
                 [self.passcodeTextView refreshView];
                 [self.passcodeInstructionsLabel setText:[SFSDKResourceUtils localizedString:@"passcodesDoNotMatchError"]];
+                UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, self.passcodeInstructionsLabel.text);
                 self.firstPasscodeValidated = NO;
             }
         } else {
@@ -218,6 +232,7 @@ static CGFloat      const kSFViewBoarderWidth                  = 1.0f;
             //Change labels for confirm passcode
             [self.navigationItem setTitle:[SFSDKResourceUtils localizedString:@"verifyPasscodeNavTitle"]];
             [self.passcodeInstructionsLabel setText:[SFSDKResourceUtils localizedString:@"passcodeConfirmInstructions"]];
+            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, self.passcodeInstructionsLabel.text);
             [self.passcodeInstructionsLabel setFont:self.viewConfig.instructionFont];
             [self layoutSubviews];
         }
@@ -225,7 +240,7 @@ static CGFloat      const kSFViewBoarderWidth                  = 1.0f;
         [self.passcodeTextView refreshView];
     }
     
-    return NO;
+    return UIAccessibilityIsVoiceOverRunning();
 }
 
 @end

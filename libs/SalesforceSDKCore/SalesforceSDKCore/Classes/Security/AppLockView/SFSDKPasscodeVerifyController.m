@@ -118,6 +118,10 @@ NSUInteger const kSFMaxNumberofAttempts = 10;
     self.passcodeTextView.delegate = self;
     self.passcodeTextView.layer.borderWidth = kSFViewBoarderWidth;
     self.passcodeTextView.accessibilityIdentifier = @"passcodeTextField";
+    self.passcodeTextView.secureTextEntry = YES;
+    if (self.passcodeLengthKnown) {
+        self.passcodeTextView.accessibilityHint = [[NSString alloc] initWithFormat:[SFSDKResourceUtils localizedString:@"accessibilityPasscodeLength"], self.viewConfig.passcodeLength];
+    }
     [self.passcodeTextView clearPasscode];
     [self.view addSubview:self.passcodeTextView];
     
@@ -174,6 +178,7 @@ NSUInteger const kSFMaxNumberofAttempts = 10;
     [super viewWillAppear:animated];
     [self.navigationItem setTitle:[SFSDKResourceUtils localizedString:@"verifyPasscodeNavTitle"]];
     [self.passcodeInstructionsLabel setFont:self.viewConfig.instructionFont];
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, self.passcodeInstructionsLabel);
     [self layoutSubviews];
     [self.passcodeTextView refreshView];
 }
@@ -230,6 +235,15 @@ NSUInteger const kSFMaxNumberofAttempts = 10;
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)rString {
     NSUInteger length = (self.passcodeLengthKnown) ? self.viewConfig.passcodeLength : kSFMaxPasscodeLength;
     
+    // This fixes deleting if VoiceOver is on.
+    if (UIAccessibilityIsVoiceOverRunning() && [rString isEqualToString:@""]) {
+        [self.passcodeTextView deleteBackward];
+
+        NSMutableString *text = [[NSMutableString alloc] initWithString:self.passcodeTextView.text];
+        [text deleteCharactersInRange:NSMakeRange([text length]-1, 1)];
+        [self.passcodeTextView setText:self.passcodeTextView.passcodeInput];
+    }
+    
     // Check if input is an actual int
     if (rString.intValue == 0 && ![rString isEqualToString:@"0"]) {
         return NO;
@@ -246,7 +260,7 @@ NSUInteger const kSFMaxNumberofAttempts = 10;
         [self.passcodeTextView refreshView];
     }
     
-    return NO;
+    return UIAccessibilityIsVoiceOverRunning();
 }
 
 - (void)layoutVerifyButton:(NSNotification *)notification
@@ -293,6 +307,7 @@ NSUInteger const kSFMaxNumberofAttempts = 10;
             
             NSString *passcodeFailedString = [NSString stringWithFormat:[SFSDKResourceUtils localizedString:@"passcodeInvalidError"], self.remainingAttempts];
             [self.passcodeInstructionsLabel setText:passcodeFailedString];
+            UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, passcodeFailedString);
             [self layoutSubviews];
             
             if (![self.navigationItem.leftBarButtonItem isEnabled]) {
@@ -318,12 +333,14 @@ NSUInteger const kSFMaxNumberofAttempts = 10;
 {
     [self resetReaminingAttemps];
     [self.verifyDelegate passcodeVerified];
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, [SFSDKResourceUtils localizedString:@"accessibilityUnlockAnnouncment"]);
 }
 
 - (void)validatePasscodeFailed
 {
     [self resetReaminingAttemps];
     [self.verifyDelegate passcodeFailed];
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, [SFSDKResourceUtils localizedString:@"accessibilityLoggedOut"]);
 }
 
 @end

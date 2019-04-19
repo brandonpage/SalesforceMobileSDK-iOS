@@ -28,6 +28,7 @@
 #import "SFSDKPasscodeTextField.h"
 #import "UIColor+SFSDKPasscodeView.h"
 #import "SFSDKAppLockViewConfig.h"
+#import "SFSDKResourceUtils.h"
 
 static CGFloat      const kDefaultLineWidth                  = 1;
 static NSUInteger   const kMaxPasscodeLength                 = 8;
@@ -65,6 +66,8 @@ static CGFloat      const kPasscodeCircleDiameter            = 22.f;
         self.borderStyle = UITextBorderStyleNone;
         self.layer.borderColor = config.borderColor.CGColor;
         self.fillColor = config.primaryColor;
+        self.textColor = config.secondaryColor;
+        self.accessibilityTraits = UIAccessibilityTraitNone;
     }
     return self;
 }

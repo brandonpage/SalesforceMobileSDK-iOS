@@ -48,6 +48,10 @@
 "biometricFallbackActionLabel" = "Use Passcode";
 "biometricReason" = "Please authenticate to proceed.";
 "logoutButtonTitle" = "Log out";
+"accessibilityPasscodeLength" = "Passcode is %d numbers long.";
+"accessibilityUnlockAnnouncment" = "Passcode confirmed.";
+"accessibilityLoggedOut" = "You have been logged out.";
+"accesibilityPasscodeField" = "Passcode field";
 
 // OAuth flow
 "authAlertContinueButton"="Continue";
