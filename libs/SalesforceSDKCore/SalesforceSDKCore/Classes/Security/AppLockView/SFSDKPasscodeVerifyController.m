@@ -118,9 +118,11 @@ NSUInteger const kSFMaxNumberofAttempts = 10;
     self.passcodeTextView.delegate = self;
     self.passcodeTextView.layer.borderWidth = kSFViewBoarderWidth;
     self.passcodeTextView.accessibilityIdentifier = @"passcodeTextField";
+    self.passcodeTextView.accessibilityLabel = [SFSDKResourceUtils localizedString:@"accesibilityPasscodeFieldLabel"];
     self.passcodeTextView.secureTextEntry = YES;
+    self.passcodeTextView.isAccessibilityElement = YES;
     if (self.passcodeLengthKnown) {
-        self.passcodeTextView.accessibilityHint = [[NSString alloc] initWithFormat:[SFSDKResourceUtils localizedString:@"accessibilityPasscodeLength"], self.viewConfig.passcodeLength];
+        self.passcodeTextView.accessibilityHint = [[NSString alloc] initWithFormat:[SFSDKResourceUtils localizedString:@"accessibilityPasscodeLengthHint"], self.viewConfig.passcodeLength];
     }
     [self.passcodeTextView clearPasscode];
     [self.view addSubview:self.passcodeTextView];
@@ -232,16 +234,13 @@ NSUInteger const kSFMaxNumberofAttempts = 10;
 }
 
 #pragma mark - UITextFieldDelegate
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)rString {
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)rString
+{
     NSUInteger length = (self.passcodeLengthKnown) ? self.viewConfig.passcodeLength : kSFMaxPasscodeLength;
     
     // This fixes deleting if VoiceOver is on.
     if (UIAccessibilityIsVoiceOverRunning() && [rString isEqualToString:@""]) {
         [self.passcodeTextView deleteBackward];
-
-        NSMutableString *text = [[NSMutableString alloc] initWithString:self.passcodeTextView.text];
-        [text deleteCharactersInRange:NSMakeRange([text length]-1, 1)];
-        [self.passcodeTextView setText:self.passcodeTextView.passcodeInput];
     }
     
     // Check if input is an actual int
@@ -255,7 +254,11 @@ NSUInteger const kSFMaxNumberofAttempts = 10;
     }
     
     if (self.passcodeLengthKnown && [self.passcodeTextView.passcodeInput length] == length) {
+        NSInteger beforeAttemps = [self remainingAttempts];
         [self verifyPasscode];
+        // For accessibility: Check for success or failure of verify passcode and return accordingly.
+        // Return value determines the success or failure typing tone placed for voiceover.
+        return [self remainingAttempts] >= beforeAttemps;
     } else {
         [self.passcodeTextView refreshView];
     }
@@ -333,14 +336,14 @@ NSUInteger const kSFMaxNumberofAttempts = 10;
 {
     [self resetReaminingAttemps];
     [self.verifyDelegate passcodeVerified];
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, [SFSDKResourceUtils localizedString:@"accessibilityUnlockAnnouncment"]);
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, [SFSDKResourceUtils localizedString:@"accessibilityUnlockAnnouncement"]);
 }
 
 - (void)validatePasscodeFailed
 {
     [self resetReaminingAttemps];
     [self.verifyDelegate passcodeFailed];
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, [SFSDKResourceUtils localizedString:@"accessibilityLoggedOut"]);
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, [SFSDKResourceUtils localizedString:@"accessibilityLoggedOutAnnouncement"]);
 }
 
 @end

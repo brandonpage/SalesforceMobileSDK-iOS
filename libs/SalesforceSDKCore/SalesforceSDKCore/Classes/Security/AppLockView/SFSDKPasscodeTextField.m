@@ -74,6 +74,7 @@ static CGFloat      const kPasscodeCircleDiameter            = 22.f;
 
 - (void)clearPasscode {
     self.passcodeInput = [NSMutableString stringWithString:@""];
+    [self setText:@""];
 }
 
 - (void)deleteBackward
@@ -164,6 +165,10 @@ static CGFloat      const kPasscodeCircleDiameter            = 22.f;
         _subLayerRefs = [[NSMutableArray alloc] init];
     }
     return _subLayerRefs;
+}
+
+- (void)accessibilityElementDidBecomeFocused {
+    [self setText:self.passcodeInput];
 }
 
 @end
