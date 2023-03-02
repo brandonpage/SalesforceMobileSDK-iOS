@@ -825,6 +825,12 @@ void dispatch_once_on_main_thread(dispatch_once_t *predicate, dispatch_block_t b
 
 - (void)screenLockFlowDidComplete:(NSNotification *)notification { }
 
+#pragma mark - BioAuth
+
+- (BOOL)isBioAuthEnabled {
+    return YES;
+}
+
 @end
 
 NSString *SFAppTypeGetDescription(SFAppType appType){

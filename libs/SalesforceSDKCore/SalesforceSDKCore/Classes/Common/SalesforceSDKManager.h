@@ -259,6 +259,8 @@ NS_SWIFT_NAME(SalesforceManager)
  */
 - (nonnull NSString *)devInfoTitleString;
 
+- (BOOL)isBioAuthEnabled;
+
 @end
 
 NS_ASSUME_NONNULL_END
