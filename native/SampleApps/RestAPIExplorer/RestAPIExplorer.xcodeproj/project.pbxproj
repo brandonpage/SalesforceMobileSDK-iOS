@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		6965555E2589961000A1AB82 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6965555D2589961000A1AB82 /* SceneDelegate.swift */; };
 		696A8B5A2AD0F75900A85A1D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 696A8B592AD0F75900A85A1D /* PrivacyInfo.xcprivacy */; };
+		A34FBE0D2B462442000CA5CD /* NativeLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34FBDEF2B462441000CA5CD /* NativeLoginView.swift */; };
+		A34FBE0E2B462442000CA5CD /* NaiveLoginViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34FBE0C2B462442000CA5CD /* NaiveLoginViewFactory.swift */; };
 		A3D23079219749C3009F433D /* SalesforceSDKCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7D641C8218F429D006DF5F0 /* SalesforceSDKCommon.framework */; };
 		A3D2307A219749C3009F433D /* SalesforceSDKCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B7D641C8218F429D006DF5F0 /* SalesforceSDKCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B79F072320EA936D00BC7D6F /* MobileSync.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B79F06E520EA931200BC7D6F /* MobileSync.framework */; };
@@ -206,6 +208,8 @@
 		6965555D2589961000A1AB82 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		696A8B592AD0F75900A85A1D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		69B2B3D2261D48D100AB86C2 /* RestAPIExplorer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RestAPIExplorer.entitlements; sourceTree = "<group>"; };
+		A34FBDEF2B462441000CA5CD /* NativeLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeLoginView.swift; sourceTree = "<group>"; };
+		A34FBE0C2B462442000CA5CD /* NaiveLoginViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaiveLoginViewFactory.swift; sourceTree = "<group>"; };
 		B79F06DC20EA931200BC7D6F /* MobileSync.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MobileSync.xcodeproj; path = ../../../libs/MobileSync/MobileSync.xcodeproj; sourceTree = "<group>"; };
 		B79F06EC20EA931900BC7D6F /* SalesforceSDKCore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SalesforceSDKCore.xcodeproj; path = ../../../libs/SalesforceSDKCore/SalesforceSDKCore.xcodeproj; sourceTree = "<group>"; };
 		B79F06FC20EA931F00BC7D6F /* SalesforceAnalytics.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SalesforceAnalytics.xcodeproj; path = ../../../libs/SalesforceAnalytics/SalesforceAnalytics.xcodeproj; sourceTree = "<group>"; };
@@ -315,6 +319,8 @@
 		B7CEA6F120B7105E007D0564 /* RestAPIExplorer */ = {
 			isa = PBXGroup;
 			children = (
+				A34FBDEF2B462441000CA5CD /* NativeLoginView.swift */,
+				A34FBE0C2B462442000CA5CD /* NaiveLoginViewFactory.swift */,
 				B7CEA71220B71202007D0564 /* Helpers */,
 				B7CEA71020B71202007D0564 /* Model */,
 				B7CEA70A20B71202007D0564 /* ViewControllers */,
@@ -608,9 +614,11 @@
 				B7CEA71820B71202007D0564 /* IDPLoginViewController.swift in Sources */,
 				B7CEA71920B71202007D0564 /* InitialViewController.swift in Sources */,
 				B7CEA71720B71202007D0564 /* RootViewController.swift in Sources */,
+				A34FBE0D2B462442000CA5CD /* NativeLoginView.swift in Sources */,
 				B7CEA71620B71202007D0564 /* IDPLoginNavViewController.swift in Sources */,
 				B7CEA6F320B7105E007D0564 /* AppDelegate.swift in Sources */,
 				B7CEA71B20B71202007D0564 /* Actions.swift in Sources */,
+				A34FBE0E2B462442000CA5CD /* NaiveLoginViewFactory.swift in Sources */,
 				B7CEA71A20B71202007D0564 /* ActionsTableViewController.swift in Sources */,
 				B7CEA71C20B71202007D0564 /* UIFont+helper.swift in Sources */,
 				B7CEA71D20B71202007D0564 /* UIColors+helper.swift in Sources */,

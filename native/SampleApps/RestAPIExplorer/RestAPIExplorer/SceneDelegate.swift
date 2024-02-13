@@ -37,6 +37,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         self.window?.windowScene = windowScene
+        
+        let clientId = "3MVG9CEn_O3jvv0wTqRT0Le6tmzX.EQ9ZvtHL1TG3gHFV.4IvKZyXw5SgdiVPi61mXrpu40mCOhKevEfYNMOm"
+        let redirectUri = "https://msdk-enhanced-dev-ed.my.site.com/services/oauth2/echo"
+        let loginUrl = "https://msdk-enhanced-dev-ed.my.site.com/headless"
+        let nativeLoginViewConroller = NativeLoginViewFactory.create()
+        
+        SalesforceManager.shared.useNativeLogin(withConsumerKey: clientId, callbackUrl: redirectUri, communityUrl: loginUrl, nativeLoginViewController: nativeLoginViewConroller, scene:scene)
 
         AuthHelper.registerBlock(forCurrentUserChangeNotifications: scene) {
             self.resetViewState {
