@@ -33,7 +33,7 @@ jobs:
           xcode: ${{ inputs.xcode }}
           platform: iOS
           platform-version: ${{ inputs.ios }}
-          workspace: SalesSalesforceMobileSDK.xcworkspace
+          workspace: SalesforceMobileSDK.xcworkspace
           scheme: ${{ inputs.lib }}
           code-coverage: ${{ github.event_name == 'pull_request' }}
           upload-logs: always
