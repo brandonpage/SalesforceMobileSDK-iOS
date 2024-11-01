@@ -45,7 +45,7 @@ jobs:
       - uses: MeilCli/danger-action@v6
         with:
           plugins_file: '.github/Gemfile'
-          danger_file: '.github/Dangerfile'
+          danger_file: '.github/Dangerfile.rb'
           danger_id: "${{ inputs.lib }}"
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
