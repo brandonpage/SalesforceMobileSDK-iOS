@@ -19,14 +19,14 @@ message << " --- | ---- | -------- | ----------- | ---- | --- |\n"
 # end
 # print "\n\n"
 
-print "\nlib: #{lib}\n"
-print "\npwd: #{system('pwd')}\n"
-print "\nls: #{system('ls')}\n"
-print "\nls (../): #{system('ls ../')}\n"
-print "\nls (SA): #{system("ls ../libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/")}\n"
+# print "\nlib: #{lib}\n"
+# print "\npwd: #{system('pwd')}\n"
+# print "\nls: #{system('ls')}\n"
+# print "\nls (../): #{system('ls ../')}\n"
+# print "\nls (SA): #{system("ls ./libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/")}\n"
 
 # Parse Clang Plist files and report issues associated with files modified in this PR.
-files = Dir["../libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"]
+files = Dir["./libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"]
 for file in files;
     print "\nfile: #{file}"
     report = Plist.parse_xml(file)
