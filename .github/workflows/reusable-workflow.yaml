@@ -23,17 +23,17 @@ jobs:
           npm install shelljs@0.8.5
           ./install.sh
           echo ${{ secrets.TEST_CREDENTIALS }} > ./shared/test/test_credentials.json
-      # - uses: mxcl/xcodebuild@v3
-      #   with:
-      #     xcode: ${{ inputs.xcode }}
-      #     platform: iOS
-      #     platform-version: ${{ inputs.ios }}
-      #     workspace: SalesforceMobileSDK.xcworkspace
-      #     scheme: ${{ inputs.lib }}
-      #     code-coverage: ${{ github.event_name == 'pull_request' }}
-      #     upload-logs: always
+      - uses: mxcl/xcodebuild@v3
+        with:
+          xcode: ${{ inputs.xcode }}
+          platform: iOS
+          platform-version: ${{ inputs.ios }}
+          workspace: SalesforceMobileSDK.xcworkspace
+          scheme: ${{ inputs.lib }}
+          code-coverage: ${{ github.event_name == 'pull_request' }}
+          upload-logs: always
       - name: Static Analysis and Danger
-        if: ${{ github.event_name == 'pull_request' }} && success() || failure()
+        if: ${{ github.event_name == 'pull_request' }} && (success() || failure())
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -42,15 +42,5 @@ jobs:
           cd .github
           bundle update && bundle install
           bundle exec danger --dangerfile=Dangerfile.rb --danger_id="${{ inputs.lib }}" --verbose
-
-          
-      # - uses: MeilCli/danger-action@v6
-      #   if: ${{ github.event_name == 'pull_request' }} && success() || failure()
-      #   with:
-      #     plugins_file: '.github/Gemfile'
-      #     danger_file: '.github/Dangerfile.rb'
-      #     danger_id: "${{ inputs.lib }}"
-      #   env:
-      #     DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
       
