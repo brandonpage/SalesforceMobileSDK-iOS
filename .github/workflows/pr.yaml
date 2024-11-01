@@ -13,4 +13,5 @@ jobs:
         lib: [SalesforceSDKCommon, SalesforceAnalytics, SalesforceSDKCore, SmartStore, MobileSync]
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
-      lib: ${{ matrix.lib }}
+      lib: SalesforceAnalytics
+      # lib: ${{ matrix.lib }}
