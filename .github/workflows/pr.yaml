@@ -6,12 +6,31 @@ on:
     #   - dev
 
 jobs:
+  static-analysis:
+    runs-on: macos-latest
+    outputs:
+      libs: ${{ steps.static-analysis.outputs.libs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Static Analysis and Danger
+        if: ${{ github.event_name == 'pull_request' }} && (success() || failure())
+        env:
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          xcodebuild analyze -workspace SalesforceMobileSDK.xcworkspace -scheme MobileSync -sdk 'iphonesimulator' \
+            CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES | xcbeautify
+          cd .github
+          bundle update && bundle install
+          bundle exec danger --dangerfile=DangerStaticAnalysis.rb
+
   ios-pr:
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     lib: [SalesforceSDKCommon, SalesforceAnalytics, SalesforceSDKCore, SmartStore, MobileSync]
+    needs: [static-analysis]
+    strategy:
+      fail-fast: false
+      matrix:
+        lib: ${{ needs.static-analysis.outputs.libs }}
+        # lib: [SalesforceSDKCommon, SalesforceAnalytics, SalesforceSDKCore, SmartStore, MobileSync]
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
-      lib: SalesforceAnalytics
-      # lib: ${{ matrix.lib }}
+      lib: ${{ matrix.lib }}
