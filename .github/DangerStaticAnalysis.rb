@@ -12,12 +12,22 @@ end
 
 print "modifed libs: #{modifed_libs}\n"
 print "modifed libs as list: [ #{modifed_libs.join(", ")} ]\n"
+# TODO: REMOVE THIS
+modifed_libs.remove(".github")
+
+# TODO: USE THIS
+# If we are modifiing CI run all tests.
+# if modifed_libs.inclues?(".github")
+#     modifed_libs = ['SalesforceSDKCommon', 'SalesforceAnalytics', 'SalesforceSDKCore', 'SmartStore', 'MobileSync']
+# end
+
 
 # Set Github Job output so we know which tests to run
 ENV['GITHUB_OUTPUT'] = "[ #{modifed_libs.join(", ")} ]"
 
+files = Set[]
 for lib in modifed_libs;
-    files += Dir["../libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"]
+    files.merge(Dir["../libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"])
 end
 
 modified_file_names = git.modified_files.map { |file| File.basename(file, File.extname(file)) }
