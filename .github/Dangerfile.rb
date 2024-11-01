@@ -1,5 +1,7 @@
-xcode_summary.inline_mode = true
-xcode_summary.report './test.xcresult'
+require 'plist'
+
+# xcode_summary.inline_mode = true
+# xcode_summary.report './test.xcresult'
 
 # Markdown table character length without any issues
 MAKRDOWN_LENGTH = 138
