@@ -10,14 +10,19 @@ message << "File | Type | Category | Description | Line | Col |\n"
 message << " --- | ---- | -------- | ----------- | ---- | --- |\n"
 
 print "Modified files:"
-for f in git.modified_files;
-    print "-> #{f}"
+for m in git.modified_files;
+    print "\n#{m}"
 end
+print "\nAdded files:"
+for a in git.added_files;
+    print "\n#{a}"
+end
+print "\n\n"
 
 # Parse Clang Plist files and report issues associated with files modified in this PR.
 files = Dir["../libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"]
 for file in files;
-    print "file: #{file}"
+    print "\nfile: #{file}"
     report = Plist.parse_xml(file)
 
     if git.modified_files.include?(file) || git.added_files.include?(file)
