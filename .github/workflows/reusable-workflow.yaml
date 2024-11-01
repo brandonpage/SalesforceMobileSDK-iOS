@@ -17,21 +17,21 @@ jobs:
   test-ios:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4.1.0
+      - uses: actions/checkout@v4
       - name: Install Dependencies
         run: |
           npm install shelljs@0.8.5
           ./install.sh
           echo ${{ secrets.TEST_CREDENTIALS }} > ./shared/test/test_credentials.json
-      # - uses: mxcl/xcodebuild@v3
-      #   with:
-      #     xcode: ${{ inputs.xcode }}
-      #     platform: iOS
-      #     platform-version: ${{ inputs.ios }}
-      #     workspace: SalesforceMobileSDK.xcworkspace
-      #     scheme: ${{ inputs.lib }}
-      #     code-coverage: ${{ github.event_name == 'pull_request' }}
-      #     upload-logs: always
+      - uses: mxcl/xcodebuild@v3
+        with:
+          xcode: ${{ inputs.xcode }}
+          platform: iOS
+          platform-version: ${{ inputs.ios }}
+          workspace: SalesforceMobileSDK.xcworkspace
+          scheme: ${{ inputs.lib }}
+          code-coverage: ${{ github.event_name == 'pull_request' }}
+          upload-logs: always
       - name: Static Analysis and Danger
         if: ${{ github.event_name == 'pull_request' }} && (success() || failure())
         env:
@@ -39,6 +39,8 @@ jobs:
         run: |
           xcodebuild analyze -workspace SalesforceMobileSDK.xcworkspace -scheme ${{ inputs.lib }} -sdk 'iphonesimulator' \
             CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES | xcbeautify
+          
+          # git fetch  
           cd .github
           bundle update && bundle install
           bundle exec danger --dangerfile=Dangerfile.rb --danger_id="${{ inputs.lib }}" --verbose
