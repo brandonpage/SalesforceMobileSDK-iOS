@@ -40,7 +40,7 @@ jobs:
           xcodebuild analyze -workspace SalesforceMobileSDK.xcworkspace -scheme ${{ inputs.lib }} -sdk 'iphonesimulator' \
             CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES | xcbeautify
           
-          # git fetch  
+          git fetch
           cd .github
           bundle update && bundle install
           bundle exec danger --dangerfile=Dangerfile.rb --danger_id="${{ inputs.lib }}" --verbose
