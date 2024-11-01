@@ -1,7 +1,7 @@
 require 'plist'
 
-xcode_summary.inline_mode = true
-xcode_summary.report '../test.xcresult'
+# xcode_summary.inline_mode = true
+# xcode_summary.report '../test.xcresult'
 
 # Markdown table character length without any issues
 MAKRDOWN_LENGTH = 138
@@ -14,9 +14,11 @@ message << " --- | ---- | -------- | ----------- | ---- | --- |\n"
 # Parse Clang Plist files and report issues associated with files modified in this PR.
 files = Dir["../libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"]
 for file in files;
+    file.slice! "../"
     report = Plist.parse_xml(file)
 
     if git.modified_files.include?(file) || git.added_files.include?(file)
+        print "file match! #{file}"
         issues = report['diagnostics']
         for i in 0..issues.count-1
             unless issues[i].nil?
