@@ -7,10 +7,10 @@ on:
 
 jobs:
   ios-pr:
-    strategy:
-      fail-fast: false
-      matrix:
-        lib: [SalesforceSDKCommon, SalesforceAnalytics, SalesforceSDKCore, SmartStore, MobileSync]
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     lib: [SalesforceSDKCommon, SalesforceAnalytics, SalesforceSDKCore, SmartStore, MobileSync]
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       lib: SalesforceAnalytics
