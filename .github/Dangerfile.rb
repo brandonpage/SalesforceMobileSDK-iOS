@@ -12,18 +12,23 @@ message << "File | Type | Category | Description | Line | Col |\n"
 message << " --- | ---- | -------- | ----------- | ---- | --- |\n"
 
 print "Modified files:\n"
-for m in git.modified_files;
+modified_files = git.modified_files.map { |file| File.basename(file, File.extname(file)) }
+for m in modified_files;
     print "#{m}\n"
 end
+
+added_files = git.added_files.map { |file| File.basename(file, File.extname(file)) }
 
 # Parse Clang Plist files and report issues associated with files modified in this PR.
 files = Dir["../libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"]
 for file in files;
     report = Plist.parse_xml(file)
-    file.slice! "../"
-    print "File: #{file}"
+    print "report: #{report}"
 
-    if git.modified_files.include?(file) || git.added_files.include?(file)
+    file_name = File.basename(file, File.extname(file))
+    print "File: #{file_name}\n"
+
+    if modified_files.include?(file_name) || added_files.include?(file_name)
         print "file match! #{file}"
         issues = report['diagnostics']
         for i in 0..issues.count-1
