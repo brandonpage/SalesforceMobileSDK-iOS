@@ -10,10 +10,10 @@ for file in (git.modified_files + git.added_files);
     modifed_libs.add(l)
 end
 
-print "modifed libs: #{modifed_libs}\n"
-print "modifed libs as list: [ #{modifed_libs.join(", ")} ]\n"
 # TODO: REMOVE THIS
 modifed_libs.delete(".github")
+print "modifed libs: #{modifed_libs}\n"
+print "modifed libs as list: [ #{modifed_libs.join(", ")} ]\n"
 
 # TODO: USE THIS
 # If we are modifiing CI run all tests.
@@ -23,7 +23,9 @@ modifed_libs.delete(".github")
 
 
 # Set Github Job output so we know which tests to run
-ENV['GITHUB_OUTPUT'] = "libs=[ #{modifed_libs.join(", ")} ]"
+system("echo libs=[ #{modifed_libs.join(", ")} ] >> $GITHUB_OUTPUT")
+
+# ENV['GITHUB_OUTPUT'] = "libs=[ #{modifed_libs.join(", ")} ]"
 
 # files = Set[]
 # for lib in modifed_libs;
