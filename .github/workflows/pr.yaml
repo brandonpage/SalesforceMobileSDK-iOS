@@ -32,14 +32,16 @@ jobs:
       - name: Test
         run: cat libs_to_run.txt
       - name: Set Libs Value
-        run: echo $(cat libs_to_run.txt) >> "$GITHUB_OUTPUT"
+        run: echo $(cat libs_to_run.txt) >> $GITHUB_OUTPUT
+      - name: Test print
+        run: echo $GITHUB_OUTPUT
 
   ios-pr:
     needs: [static-analysis]
     strategy:
       fail-fast: false
       matrix:
-        lib: ${{ fromJSON(needs.static-analysis.outputs.libs) }}
+        lib: ${{ needs.static-analysis.outputs.libs }}
         # lib: [SalesforceSDKCommon, SalesforceAnalytics, SalesforceSDKCore, SmartStore, MobileSync]
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
