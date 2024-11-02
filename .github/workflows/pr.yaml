@@ -32,9 +32,9 @@ jobs:
       - name: Test
         run: cat libs_to_run.txt
       - name: Set Libs Value
-        run: echo $(cat libs_to_run.txt) >> $GITHUB_OUTPUT
+        run: echo "$(cat libs_to_run.txt)"" >> $GITHUB_OUTPUT
       - name: Test print
-        run: echo $GITHUB_OUTPUT
+        run: echo ${{ steps.static-analysis.outputs.libs }}
 
   ios-pr:
     needs: [static-analysis]
