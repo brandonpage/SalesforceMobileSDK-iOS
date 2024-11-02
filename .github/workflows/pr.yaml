@@ -39,7 +39,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lib: ${{ needs.static-analysis.outputs.libs }}
+        lib: ${{ fromJSON(needs.static-analysis.outputs.libs) }}
         # lib: [SalesforceSDKCommon, SalesforceAnalytics, SalesforceSDKCore, SmartStore, MobileSync]
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
