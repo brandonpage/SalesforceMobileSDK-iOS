@@ -13,7 +13,7 @@ end
 print "modifed libs: #{modifed_libs}\n"
 print "modifed libs as list: [ #{modifed_libs.join(", ")} ]\n"
 # TODO: REMOVE THIS
-modifed_libs.remove(".github")
+modifed_libs.delete(".github")
 
 # TODO: USE THIS
 # If we are modifiing CI run all tests.
