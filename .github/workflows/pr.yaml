@@ -9,7 +9,7 @@ jobs:
   static-analysis:
     runs-on: macos-latest
     outputs:
-      libs: ${{ steps.static-analysis.outputs.libs }}
+      libs: ${{ steps.danger.outputs.libs }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,9 +32,10 @@ jobs:
       - name: Test
         run: cat libs_to_run.txt
       - name: Set Libs Value
+        id: danger
         run: echo "$(cat libs_to_run.txt)" >> $GITHUB_OUTPUT
       - name: Test print
-        run: echo ${{ steps.static-analysis.outputs.libs }}
+        run: echo ${{ steps.danger.outputs.libs }}
 
   ios-pr:
     needs: [static-analysis]
