@@ -23,9 +23,10 @@ print "modifed libs as list: [#{modifed_libs.join(", ")}]\n"
 
 
 # Set Github Job output so we know which tests to run
-# File.write('../libs_to_run.txt', "libs=[#{modifed_libs.join(", ")}]")
-File.write('../libs_to_run.txt', "libs=['SalesforceSDKCommon', 'SalesforceAnalytics']")
-# `echo "libs=[#{modifed_libs.join(", ")}]" >> $GITHUB_OUTPUT`
+json_libs = modifed_libs.map { |l| "'#{l}'"}.join(", ")
+# File.write('../libs_to_run.txt', "libs=[#{json_libs}]")
+# File.write('../libs_to_run.txt', "libs=['SalesforceSDKCommon', 'SalesforceAnalytics']")
+`echo "libs=[#{json_libs}]" >> $GITHUB_OUTPUT`
 # ENV['GITHUB_OUTPUT'] = "libs=[#{modifed_libs.join(", ")}]"
 
 # files = Set[]

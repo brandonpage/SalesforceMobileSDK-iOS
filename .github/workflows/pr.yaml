@@ -21,7 +21,7 @@ jobs:
           ./install.sh
       - name: Static Analysis and Danger
         if: ${{ github.event_name == 'pull_request' }} && (success() || failure())
-        # id: danger
+        id: danger
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -30,13 +30,13 @@ jobs:
           cd .github
           bundle update && bundle install
           bundle exec danger --dangerfile=DangerStaticAnalysis.rb
-      - name: Test
-        run: cat libs_to_run.txt
-      - name: Set Libs Value
-        id: danger
-        run: echo "$(cat libs_to_run.txt)" >> $GITHUB_OUTPUT
-      - name: Test print
-        run: echo ${{ steps.danger.outputs.libs }}
+      # - name: Test
+      #   run: cat libs_to_run.txt
+      # - name: Set Libs Value
+      #   id: danger
+      #   run: echo "$(cat libs_to_run.txt)" >> $GITHUB_OUTPUT
+      # - name: Test print
+      #   run: echo ${{ steps.danger.outputs.libs }}
 
   ios-pr:
     needs: [static-analysis]
@@ -44,7 +44,6 @@ jobs:
       fail-fast: false
       matrix:
         lib: ${{ fromJson(needs.static-analysis.outputs.libs) }}
-        # lib: [SalesforceSDKCommon, SalesforceAnalytics, SalesforceSDKCore, SmartStore, MobileSync]
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       lib: ${{ matrix.lib }}
