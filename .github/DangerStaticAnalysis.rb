@@ -13,7 +13,7 @@ end
 # TODO: REMOVE THIS
 modifed_libs.delete(".github")
 print "modifed libs: #{modifed_libs}\n"
-print "modifed libs as list: [ #{modifed_libs.join(", ")} ]\n"
+print "modifed libs as list: [#{modifed_libs.join(", ")}]\n"
 
 # TODO: USE THIS
 # If we are modifiing CI run all tests.
@@ -23,7 +23,7 @@ print "modifed libs as list: [ #{modifed_libs.join(", ")} ]\n"
 
 
 # Set Github Job output so we know which tests to run
-File.write('../libs_to_run.txt', "libs=[ #{modifed_libs.join(", ")} ]")
+File.write('../libs_to_run.txt', "libs=[#{modifed_libs.join(", ")}]")
 # `echo "libs=[ #{modifed_libs.join(", ")} ]" >> "$GITHUB_OUTPUT"`
 # ENV['GITHUB_OUTPUT'] = "libs=[ #{modifed_libs.join(", ")} ]"
 
