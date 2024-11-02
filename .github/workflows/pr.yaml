@@ -29,8 +29,10 @@ jobs:
           cd .github
           bundle update && bundle install
           bundle exec danger --dangerfile=DangerStaticAnalysis.rb
+      - name: Test
+        run: cat libs_to_run.txt
       - name: Set Libs Value
-        run: cat libs_to_run.txt >> "$GITHUB_OUTPUT"
+        run: echo $(cat libs_to_run.txt) >> "$GITHUB_OUTPUT"
 
   ios-pr:
     needs: [static-analysis]
