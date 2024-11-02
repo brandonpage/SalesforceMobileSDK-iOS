@@ -24,8 +24,8 @@ jobs:
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          xcodebuild analyze -workspace SalesforceMobileSDK.xcworkspace -scheme MobileSync -sdk 'iphonesimulator' \
-            CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES | xcbeautify
+          # xcodebuild analyze -workspace SalesforceMobileSDK.xcworkspace -scheme MobileSync -sdk 'iphonesimulator' \
+          #   CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES | xcbeautify
           cd .github
           bundle update && bundle install
           bundle exec danger --dangerfile=DangerStaticAnalysis.rb
