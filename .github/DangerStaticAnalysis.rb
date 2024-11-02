@@ -23,7 +23,7 @@ print "modifed libs as list: [ #{modifed_libs.join(", ")} ]\n"
 
 
 # Set Github Job output so we know which tests to run
-system("echo libs=[ #{modifed_libs.join(", ")} ] >> $GITHUB_OUTPUT")
+`echo "libs=[ #{modifed_libs.join(", ")} ]" >> "$GITHUB_OUTPUT"`
 
 # ENV['GITHUB_OUTPUT'] = "libs=[ #{modifed_libs.join(", ")} ]"
 
