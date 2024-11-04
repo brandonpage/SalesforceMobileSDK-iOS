@@ -6,7 +6,7 @@ LIBS = ['SalesforceSDKCommon', 'SalesforceAnalytics', 'SalesforceSDKCore', 'Smar
 
 files = Set[]
 for lib in LIBS;
-    files.merge(Dir["../../libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"])
+    files.merge(Dir["../../libs/#{lib}/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"])
 end
 print "Found #{files.count} classes with static analysis files."
 
