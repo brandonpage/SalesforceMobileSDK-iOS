@@ -29,7 +29,12 @@ jobs:
           npm install shelljs@0.8.5
           ./install.sh
           echo $TEST_CREDENTIALS > ./shared/test/test_credentials.json
+          echo "file contents:"
           cat ./shared/test/test_credentials.json
+
+          gem install json
+          cd .github
+          ruby test_rb.rb
       - uses: mxcl/xcodebuild@v3
         with:
           xcode: ${{ inputs.xcode }}
