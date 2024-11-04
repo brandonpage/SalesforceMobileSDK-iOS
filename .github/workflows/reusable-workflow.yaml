@@ -33,7 +33,6 @@ jobs:
           cat ./shared/test/test_credentials.json
 
           gem install json
-          cd .github
           ruby test_rb.rb
       - uses: mxcl/xcodebuild@v3
         with:
