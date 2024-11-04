@@ -17,9 +17,12 @@ jobs:
         run: |
           npm install shelljs@0.8.5
           ./install.sh
+      # - name: Run Static Analysis
+      #   run: set -o pipefail && xcodebuild analyze -workspace SalesforceMobileSDK.xcworkspace -scheme MobileSync -sdk 'iphonesimulator' \
+      #         CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES | xcbeautify --renderer github-actions
       - name: Run Static Analysis
-        run: set -o pipefail && xcodebuild analyze -workspace SalesforceMobileSDK.xcworkspace -scheme MobileSync -sdk 'iphonesimulator' \
-              CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES | xcbeautify --renderer github-actions
+        run: xcodebuild analyze -workspace SalesforceMobileSDK.xcworkspace -scheme MobileSync -sdk 'iphonesimulator' \
+            CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES
       - name: Report Static Analysis
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
