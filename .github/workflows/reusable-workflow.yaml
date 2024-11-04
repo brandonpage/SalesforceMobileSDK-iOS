@@ -27,7 +27,7 @@ jobs:
         run: |
           npm install shelljs@0.8.5
           ./install.sh
-          echo $TEST_CREDENTIALS > ./shared/test/test_credentials.json
+          ./build/pre-build
       - uses: mxcl/xcodebuild@v3
         with:
           xcode: ${{ inputs.xcode }}
