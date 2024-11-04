@@ -39,6 +39,6 @@ jobs:
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd .github
+          cd .github/DangerFiles
           bundle update && bundle install
-          bundle exec danger --dangerfile=DangerTestResults.rb --danger_id=${{ inputs.lib }}
+          bundle exec danger --dangerfile=TestResults.rb --danger_id=${{ inputs.lib }}
