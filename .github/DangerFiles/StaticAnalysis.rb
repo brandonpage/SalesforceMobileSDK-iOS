@@ -24,15 +24,15 @@ for file in files;
     report_file_name = File.basename(file, File.extname(file))
     print "file name: #{report_file_name}\n"
 
-    # if modified_file_names.include?(report_file_name) || added_file_names.include?(report_file_name)
-    #     print "file match! #{file}"
+    if modified_file_names.include?(report_file_name) || added_file_names.include?(report_file_name)
+        print "file match! #{file}"
         issues = report['diagnostics']
         for i in 0..issues.count-1
             unless issues[i].nil?
             message << "#{file_path.split('/').last} | #{issues[i]['type']} | #{issues[i]['category']} | #{issues[i]['description']} | #{issues[i]['location']['line']} | #{issues[i]['location']['col']}\n"
             end
         end
-    # end
+    end
 end
 
 # Only print Static Analysis table if there are issues

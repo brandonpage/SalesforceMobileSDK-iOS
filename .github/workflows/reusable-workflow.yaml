@@ -42,3 +42,8 @@ jobs:
           cd .github/DangerFiles
           bundle update && bundle install
           bundle exec danger --dangerfile=TestResults.rb --danger_id=${{ inputs.lib }}
+      - uses: codecov/codecov-action@v4
+        with:
+          flags: ${{ inputs.lib }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
