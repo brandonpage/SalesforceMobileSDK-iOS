@@ -1,5 +1,5 @@
 # List of supported xcode schemes for testing
-SCHEMES = ['SalesforceSDKCommon', 'SalesforceAnalytics', 'SmartStore']
+SCHEMES = ['SalesforceSDKCore', 'MobileSync', 'SmartStore']
 # SCHEMES = ['SalesforceSDKCommon', 'SalesforceAnalytics', 'SalesforceSDKCore', 'SmartStore', 'MobileSync']
 
 modifed_libs = Set[]
