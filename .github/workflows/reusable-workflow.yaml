@@ -48,3 +48,4 @@ jobs:
           flags: ${{ inputs.lib }}
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        if: success() || failure()
