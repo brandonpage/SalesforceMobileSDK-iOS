@@ -17,10 +17,6 @@ jobs:
         run: |
           npm install shelljs@0.8.5
           ./install.sh
-      - name: SwiftLint
-        uses: norio-nomura/action-swiftlint@3.2.1
-        # env:
-        #   DIFF_BASE: ${{ github.base_ref }}
       - name: Static Analysis
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

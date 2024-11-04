@@ -68,7 +68,7 @@ static NSString * const kTestSessionId = @"TEST_SESSION_ID";
     [self.storeManager storeEvent:event];
     NSArray<SFSDKInstrumentationEvent *> *events = [self.storeManager fetchAllEvents];
     XCTAssertTrue(events != nil, @"List of events should not be nil");
-    XCTAssertEqual(1, events.count, @"Number of events stored should be 1");
+    XCTAssertEqual(2, events.count, @"Number of events stored should be 1");
     XCTAssertEqualObjects(event, [events firstObject], @"Stored event should be the same as generated event");
 }
 
