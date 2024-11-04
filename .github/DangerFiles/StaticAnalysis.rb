@@ -6,8 +6,9 @@ LIBS = ['SalesforceSDKCommon', 'SalesforceAnalytics', 'SalesforceSDKCore', 'Smar
 
 files = Set[]
 for lib in LIBS;
-    files.merge(Dir["../libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"])
+    files.merge(Dir["../../libs/SalesforceAnalytics/clangReport/StaticAnalyzer/#{lib}/#{lib}/normal/**/*.plist"])
 end
+print "Found #{files.count} classes with static analysis files."
 
 modified_file_names = git.modified_files.map { |file| File.basename(file, File.extname(file)) }
 added_file_names = git.added_files.map { |file| File.basename(file, File.extname(file)) }
