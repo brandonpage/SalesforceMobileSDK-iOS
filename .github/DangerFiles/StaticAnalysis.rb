@@ -25,11 +25,13 @@ for file in files;
     print "file name: #{report_file_name}\n"
 
     if modified_file_names.include?(report_file_name) || added_file_names.include?(report_file_name)
-        print "file match! #{file}"
+        print "file match! #{file}\n"
         issues = report['diagnostics']
+        print "issue count: #{issues.count}\n"
         for i in 0..issues.count-1
             unless issues[i].nil?
-            message << "#{file_path.split('/').last} | #{issues[i]['type']} | #{issues[i]['category']} | #{issues[i]['description']} | #{issues[i]['location']['line']} | #{issues[i]['location']['col']}\n"
+                print "#{file_path.split('/').last} | #{issues[i]['type']} | #{issues[i]['category']} | #{issues[i]['description']} | #{issues[i]['location']['line']} | #{issues[i]['location']['col']}\n"
+                # message << "#{file_path.split('/').last} | #{issues[i]['type']} | #{issues[i]['category']} | #{issues[i]['description']} | #{issues[i]['location']['line']} | #{issues[i]['location']['col']}\n"
             end
         end
     end

@@ -36,7 +36,7 @@ jobs:
           code-coverage: ${{ github.event_name == 'pull_request' }}
           upload-logs: always
       - name: Danger Test Results
-        if: failure()
+        if: (github.event_name == 'pull_request') && failure()
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
