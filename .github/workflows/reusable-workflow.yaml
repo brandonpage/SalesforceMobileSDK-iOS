@@ -19,16 +19,16 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-        # with:
-        #   fetch-depth: 100
+        with:
+          fetch-depth: 100
       - name: Install Dependencies
         shell: bash
-        # env:
-        #   TEST_CREDENTIALS: ${{ secrets.TEST_CREDENTIALS }}
+        env:
+          creds: ${{ secrets.TEST_CREDENTIALS }}
         run: |
           npm install shelljs@0.8.5
           ./install.sh
-          echo ${{ secrets.TEST_CREDENTIALS }} > ./shared/test/test_credentials.json
+          echo "$creds" > ./shared/test/test_credentials.json
           echo "file contents:"
           cat ./shared/test/test_credentials.json
 

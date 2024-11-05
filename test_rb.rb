@@ -1,6 +1,6 @@
 require 'json'
 
-puts "contents of env var: #{ENV['TEST_CREDENTAILS']}"
+puts "contents of env var: #{ENV['creds']}"
 
 
 file = File.open "./shared/test/test_credentials.json"
