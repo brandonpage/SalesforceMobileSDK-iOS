@@ -1,6 +1,6 @@
 # List of supported xcode schemes for testing
-SCHEMES = ['SalesforceSDKCore', 'MobileSync', 'SmartStore']
-# SCHEMES = ['SalesforceSDKCommon', 'SalesforceAnalytics', 'SalesforceSDKCore', 'SmartStore', 'MobileSync']
+# SCHEMES = ['SalesforceSDKCore', 'MobileSync', 'SmartStore']
+SCHEMES = ['SalesforceSDKCommon', 'SalesforceAnalytics', 'SalesforceSDKCore', 'SmartStore', 'MobileSync']
 
 modifed_libs = Set[]
 for file in (git.modified_files + git.added_files);
