@@ -22,18 +22,12 @@ jobs:
         with:
           fetch-depth: 100
       - name: Install Dependencies
-        shell: bash
-        env:
-          creds: ${{ secrets.TEST_CREDENTIALS }}
+        env: 
+          TEST_CREDENTIALS: ${{ secrets.TEST_CREDENTIALS }}
         run: |
           npm install shelljs@0.8.5
           ./install.sh
-          echo "$creds" > ./shared/test/test_credentials.json
-          echo "file contents:"
-          cat ./shared/test/test_credentials.json
-
-          gem install json
-          ruby test_rb.rb
+          echo $TEST_CREDENTIALS > ./shared/test/test_credentials.json
       - uses: mxcl/xcodebuild@v3
         with:
           xcode: ${{ inputs.xcode }}

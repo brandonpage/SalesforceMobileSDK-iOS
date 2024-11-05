@@ -40,10 +40,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 100
-      - name: Test
-        env:
-          TEST_CREDENTIALS: ${{ secrets.TEST_CREDENTIALS }}
-        run: echo $TEST_CREDENTIALS
       - name: Determine Tests to Run
         id: test-orchestrator
         env:
@@ -62,3 +58,4 @@ jobs:
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       lib: ${{ matrix.lib }}
+    secrets: inherit
