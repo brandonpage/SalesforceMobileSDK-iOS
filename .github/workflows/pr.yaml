@@ -10,6 +10,8 @@ jobs:
   static-analysis:
     runs-on: macos-latest
     steps:
+      - name: Test
+        run: echo "Test"
       - name: Member Check
         if: ${{ github.event.pull_request.author_association != 'MEMBER' }}
         run: |
