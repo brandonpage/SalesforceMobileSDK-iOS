@@ -1,7 +1,8 @@
 name: Pull Request
 
 on: 
-  pull_request:
+  # Dangerious without Member Check setep! 
+  pull_request_target:
     # branches:
     #   - dev
 
@@ -9,17 +10,20 @@ jobs:
   static-analysis:
     runs-on: macos-latest
     steps:
+      - name: Member Check
+        if: ${{ github.event.pull_request.author_association != 'MEMBER' }}
+        run: |
+          echo "Pull Request not triggered by a MSDK team member.  \n\n-> Someone from the team needs to rerun this workflow AFTER it has been deemed safe."
+          exit 1
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 100
+          ref: ${{ github.event.pull_request.head.sha }} # This is dangerous without the first access check
       - name: Install Dependencies
         run: |
           npm install shelljs@0.8.5
           ./install.sh
-      # - name: Run Static Analysis
-      #   run: set -o pipefail && xcodebuild analyze -workspace SalesforceMobileSDK.xcworkspace -scheme MobileSync -sdk 'iphonesimulator' \
-      #         CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES | xcbeautify --renderer github-actions
       - name: Run Static Analysis
         run: xcodebuild analyze -workspace SalesforceMobileSDK.xcworkspace -scheme MobileSync -sdk 'iphonesimulator' \
             CLANG_ANALYZER_OUTPUT=plist-html CLANG_ANALYZER_OUTPUT_DIR=./clangReport RUN_CLANG_STATIC_ANALYZER=YES
@@ -36,10 +40,16 @@ jobs:
     outputs:
       libs: ${{ steps.test-orchestrator.outputs.libs }}
     steps:
+      - name: Member Check
+        if: ${{ github.event.pull_request.author_association != 'MEMBER' }}
+        run: |
+          echo "Pull Request not triggered by a MSDK team member.  \n\n-> Someone from the team needs to rerun this workflow AFTER it has been deemed safe."
+          exit 1
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 100
+          ref: ${{ github.event.pull_request.head.sha }} # This is dangerous without the first access check
       - name: Determine Tests to Run
         id: test-orchestrator
         env:
