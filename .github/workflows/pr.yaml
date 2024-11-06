@@ -11,7 +11,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Test
-        run: echo "Test"
+        run: echo "Test (should fail - missing OWNER)"
       - name: Member Check
         if: ${{ github.event.pull_request.author_association != 'MEMBER' }}
         run: |
