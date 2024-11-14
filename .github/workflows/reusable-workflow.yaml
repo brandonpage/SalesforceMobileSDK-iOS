@@ -13,10 +13,14 @@ on:
         default: '^16'
         required: false
         type: string
+      macos:
+        default: macos-15
+        required: false
+        type: string
 
 jobs:
   test-ios:
-    runs-on: macos-latest
+    runs-on: ${{ inputs.macos }}
     steps:
       - uses: actions/checkout@v4
         # needs this
