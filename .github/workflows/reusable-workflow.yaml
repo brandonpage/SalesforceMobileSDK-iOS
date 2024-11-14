@@ -38,6 +38,7 @@ jobs:
           scheme: ${{ inputs.lib }}
           code-coverage: true
           upload-logs: always
+          verbosity: xcbeautify
       - name: Danger Test Results
         if: (github.event_name == 'pull_request') && failure()
         env:
