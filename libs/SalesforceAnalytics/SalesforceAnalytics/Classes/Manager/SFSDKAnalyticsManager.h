@@ -29,6 +29,7 @@
 
 #import <SalesforceAnalytics/SFSDKEventStoreManager.h>
 
+
 @interface SFSDKAnalyticsManager : NSObject
 
 @property (nonatomic, readonly, strong, nonnull) NSString *storeDirectory;
