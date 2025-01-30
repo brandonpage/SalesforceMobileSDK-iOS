@@ -18,7 +18,7 @@ jobs:
           - ios: ^18
             xcode: ^16
           - ios: ^17
-            macos: ^15
+            xcode: ^15
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       lib: ${{ matrix.lib }}
