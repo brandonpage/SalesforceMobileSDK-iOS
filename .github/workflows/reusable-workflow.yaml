@@ -46,7 +46,6 @@ jobs:
           workspace: SalesforceMobileSDK.xcworkspace
           scheme: ${{ inputs.lib }}
           code-coverage: true
-          upload-logs: always
           verbosity: xcbeautify
       - uses: slidoapp/xcresulttool@v3.1.0
         with:
