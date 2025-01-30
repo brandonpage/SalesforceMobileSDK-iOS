@@ -50,6 +50,7 @@ jobs:
       - uses: slidoapp/xcresulttool@v3.1.0
         with:
           path: test.xcresult
+          title: "${{ inputs.lib }} iOS ${{ inputs.ios }}"
         if: success() || failure()
       - uses: codecov/codecov-action@v4
         with:
