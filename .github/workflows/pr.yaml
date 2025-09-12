@@ -102,18 +102,23 @@ jobs:
       fail-fast: false
       matrix:
         lib: ${{ fromJson(needs.test-orchestrator.outputs.libs) }}
-        ios: [^26, ^18]
+        ios: [^26, ^18, ^17]
         include:
           - ios: ^26
             xcode: ^26
+            macos: macos-26
           - ios: ^18
             xcode: ^16
+            macos: macos-26
+          - ios: ^17
+            xcode: ^15
+            macos: macos-14
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       lib: ${{ matrix.lib }}
       ios: ${{ matrix.ios }}
       xcode: ${{ matrix.xcode }}
-      macos: macos-26
+      macos: ${{ matrix.macos }}
       is_pr: true
     secrets: inherit
 
@@ -122,18 +127,23 @@ jobs:
       fail-fast: false
       matrix:
         app: [RestAPIExplorer, MobileSyncExplorer]
-        ios: [^26, ^18]
+        ios: [^26, ^18, ^17]
         include:
           - ios: ^26
             xcode: ^26
+            macos: macos-26
           - ios: ^18
             xcode: ^16
+            macos: macos-26
+          - ios: ^17
+            xcode: ^15
+            macos: macos-14
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       lib: ${{ matrix.app }}
       ios: ${{ matrix.ios }}
       xcode: ${{ matrix.xcode }}
-      macos: macos-26
+      macos: ${{ matrix.macos }}
       is_pr: true
       build_only: true
     secrets: inherit
