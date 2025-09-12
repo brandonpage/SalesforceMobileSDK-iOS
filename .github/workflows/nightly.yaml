@@ -13,13 +13,15 @@ jobs:
       matrix:
         lib: [SalesforceSDKCommon, SalesforceAnalytics, SalesforceSDKCore, SmartStore, MobileSync]
         include:
-          - macos: macos-15
+          - macos: macos-26-arm64
+            ios: ^26
+            xcode: ^26
+          - macos: macos-26-arm64
             ios: ^18
             xcode: ^16
-          # - macos: macos-15
-          #   ios: ^26
-          #   xcode: ^26
-          # Note: iOS 26 simulator is not yet available on GitHub runners
+          - macos: macos-14
+            ios: ^17
+            xcode: ^15
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       lib: ${{ matrix.lib }}
@@ -34,13 +36,15 @@ jobs:
       matrix:
         app: [RestAPIExplorer, MobileSyncExplorer]
         include:
-          - macos: macos-15
+          - macos: macos-26-arm64
+            ios: ^26
+            xcode: ^26
+          - macos: macos-26-arm64
             ios: ^18
             xcode: ^16
-          # - macos: macos-15
-          #   ios: ^26
-          #   xcode: ^26
-          # Note: iOS 26 simulator is not yet available on GitHub runners
+          - macos: macos-14
+            ios: ^17
+            xcode: ^15
     uses: ./.github/workflows/reusable-workflow.yaml
     with:
       lib: ${{ matrix.app }}
