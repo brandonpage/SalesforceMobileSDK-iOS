@@ -13,10 +13,10 @@ jobs:
       matrix:
         lib: [SalesforceSDKCommon, SalesforceAnalytics, SalesforceSDKCore, SmartStore, MobileSync]
         include:
-          - macos: macos-26-arm64
+          - macos: macos-26
             ios: ^26
             xcode: ^26
-          - macos: macos-26-arm64
+          - macos: macos-26
             ios: ^18
             xcode: ^16
           - macos: macos-14
@@ -36,10 +36,10 @@ jobs:
       matrix:
         app: [RestAPIExplorer, MobileSyncExplorer]
         include:
-          - macos: macos-26-arm64
+          - macos: macos-26
             ios: ^26
             xcode: ^26
-          - macos: macos-26-arm64
+          - macos: macos-26
             ios: ^18
             xcode: ^16
           - macos: macos-14
