@@ -43,7 +43,7 @@ jobs:
           echo $TEST_CREDENTIALS > ./shared/test/test_credentials.json
       - name: Install iOS 17 runtime if needed
         if: ${{ inputs.ios }} == "^17"
-        run: brew install xcodesorg/made/xcodes && xcodes runtimes install "iOS 17.5"
+        run: xcodes runtimes install "iOS 17.5"
       - uses: mxcl/xcodebuild@v3
         with:
           xcode: ${{ inputs.xcode }}
