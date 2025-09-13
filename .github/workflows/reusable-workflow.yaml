@@ -61,7 +61,8 @@ jobs:
           show-code-coverage: false
           upload-bundles: false
           show-passed-tests: false
-        if: ${{ ! inputs.build_only && (success() || failure()) }}
+        # xcresulttool currently fails for iOS 26
+        if: ${{ ! inputs.build_only && (success() || failure()) && inputs.ios != '^26' }}
       - uses: codecov/codecov-action@v4
         with:
           flags: ${{ inputs.lib }}
