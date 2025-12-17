@@ -22,11 +22,11 @@ jobs:
     runs-on: ${{ inputs.macos }}
     steps:
       - uses: actions/checkout@v4
-        if: github.event_name == 'pull_request'
+        if: ${{ github.event_name == 'pull_request_target' }}
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/checkout@v4
-        if: github.event_name != 'pull_request'
+        if: ${{ github.event_name == 'pull_request_target' }}
         with:
           ref: ${{ github.head_ref }}
       - name: Install Dependencies
