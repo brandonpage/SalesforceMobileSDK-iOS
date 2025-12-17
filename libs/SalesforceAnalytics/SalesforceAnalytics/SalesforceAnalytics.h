@@ -28,7 +28,7 @@
  */
 
 #import <SalesforceAnalytics/SFSDKEventStoreManager.h>
-#import <SalesforceAnalytics/SFSDKAnalyticsLogger.h>
+#import <SalesforceAnalytics/SFSDKAnalyticsLogger.h>zzzz
 #import <SalesforceAnalytics/SFSDKDeviceAppAttributes.h>
 #import <SalesforceAnalytics/SFSDKInstrumentationEvent.h>
 #import <SalesforceAnalytics/SFSDKTransform.h>
