@@ -35,3 +35,4 @@ class MockNavigationAction: WKNavigationAction {
         super.init()
     }
 }
+
