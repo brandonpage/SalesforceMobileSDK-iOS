@@ -34,3 +34,4 @@ extern NSString * _Nonnull const kSFSDKAnalyticsComponentName;
 @interface SFSDKAnalyticsLogger : SFLogger
 
 @end
+
