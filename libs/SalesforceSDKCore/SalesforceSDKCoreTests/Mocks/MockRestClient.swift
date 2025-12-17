@@ -28,3 +28,4 @@ class MockRestClient: RestClient {
         successBlock(jsonResponse, mockURLResponse)
     }
 }
+
