@@ -27,6 +27,7 @@
 
 @testable import SalesforceSDKCore
 
+
 class MockNavigationAction: WKNavigationAction {
     private let _request: URLRequest
     override var request: URLRequest { _request }
