@@ -1,3 +1,4 @@
+// CI test trigger for W-22712082; revert before merge.
 /*
  SalesforceLogReceiver.swift
  SalesforceSDKCommon
