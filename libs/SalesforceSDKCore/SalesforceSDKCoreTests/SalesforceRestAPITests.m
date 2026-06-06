@@ -228,6 +228,21 @@ static NSException *authException = nil;
     return result;
 }
 
+// Safely coerces a REST response's dataResponse into an NSDictionary.
+// When a request fails, Salesforce returns a JSON error *array* (e.g. [{"errorCode":...}])
+// rather than a dictionary. Blindly casting that to NSDictionary and subscripting it throws an
+// uncaught NSInvalidArgumentException that aborts the whole test host process (taking unrelated
+// tests down as collateral). This helper turns that into a clean per-test XCTFail that surfaces
+// the actual error body, and returns nil so callers can skip the dictionary-subscript access.
+- (NSDictionary *)dictionaryFromResponse:(SFRestAPITestResponse *)response {
+    if ([response.dataResponse isKindOfClass:[NSDictionary class]]) {
+        return (NSDictionary *)response.dataResponse;
+    }
+    XCTFail(@"Expected a JSON dictionary response but the request failed; error=%@ body=%@",
+            response.lastError, response.dataResponse);
+    return nil;
+}
+
 - (void)changeOauthTokens:(NSString *)accessToken refreshToken:(NSString *)refreshToken {
     _currentUser.credentials.accessToken = accessToken;
     if (nil != refreshToken) _currentUser.credentials.refreshToken = refreshToken;
@@ -502,23 +517,23 @@ static NSException *authException = nil;
     XCTAssertEqualObjects(response.returnStatus, kTestRequestStatusDidLoad, @"request failed");
 
     // make sure we got an id
-    NSString *contactId = ((NSDictionary *)response.dataResponse)[LID];
+    NSString *contactId = [self dictionaryFromResponse:response][LID];
     XCTAssertNotNil(contactId, @"id not present");
-    
+
     @try {
         // try to retrieve object with id
         request = [[SFRestAPI sharedInstance] requestForRetrieveWithObjectType:CONTACT objectId:contactId fieldList:nil apiVersion:kSFRestDefaultAPIVersion];
         response = [self sendSyncRequest:request];
         XCTAssertEqualObjects(response.returnStatus, kTestRequestStatusDidLoad, @"request failed");
-        XCTAssertEqualObjects(lastName, ((NSDictionary *)response.dataResponse)[LAST_NAME], @"invalid last name");
-        XCTAssertEqualObjects(@"John", ((NSDictionary *)response.dataResponse)[FIRST_NAME], @"invalid first name");
-        
+        XCTAssertEqualObjects(lastName, [self dictionaryFromResponse:response][LAST_NAME], @"invalid last name");
+        XCTAssertEqualObjects(@"John", [self dictionaryFromResponse:response][FIRST_NAME], @"invalid first name");
+
         // try to retrieve again, passing a list of fields
         request = [[SFRestAPI sharedInstance] requestForRetrieveWithObjectType:CONTACT objectId:contactId fieldList:@"LastName, FirstName" apiVersion:kSFRestDefaultAPIVersion];
         response = [self sendSyncRequest:request];
         XCTAssertEqualObjects(response.returnStatus, kTestRequestStatusDidLoad, @"request failed");
-        XCTAssertEqualObjects(lastName, ((NSDictionary *)response.dataResponse)[LAST_NAME], @"invalid last name");
-        XCTAssertEqualObjects(@"John", ((NSDictionary *)response.dataResponse)[FIRST_NAME], @"invalid first name");
+        XCTAssertEqualObjects(lastName, [self dictionaryFromResponse:response][LAST_NAME], @"invalid last name");
+        XCTAssertEqualObjects(@"John", [self dictionaryFromResponse:response][FIRST_NAME], @"invalid first name");
         
         // Raw data will not be converted to JSON if that's what's returned.
         request = [[SFRestAPI sharedInstance] requestForRetrieveWithObjectType:CONTACT objectId:contactId fieldList:nil apiVersion:kSFRestDefaultAPIVersion];
@@ -539,16 +554,16 @@ static NSException *authException = nil;
         request = [[SFRestAPI sharedInstance] requestForQuery:[NSString stringWithFormat:@"select Id, FirstName from Contact where LastName='%@'", lastName] apiVersion:kSFRestDefaultAPIVersion];
         response = [self sendSyncRequest:request];
         XCTAssertEqualObjects(response.returnStatus, kTestRequestStatusDidLoad, @"request failed");
-        NSArray *records = ((NSDictionary *)response.dataResponse)[RECORDS];
+        NSArray *records = [self dictionaryFromResponse:response][RECORDS];
         XCTAssertEqual((int)[records count], 1, @"expected just one query result");
-        
+
         // now search object
         // Record is not available for search right away - so waiting a bit to prevent the test from flapping
         [NSThread sleepForTimeInterval:5.0f];
         request = [[SFRestAPI sharedInstance] requestForSearch:[NSString stringWithFormat:@"Find {%@}", lastName] apiVersion:kSFRestDefaultAPIVersion];
         response = [self sendSyncRequest:request];
         XCTAssertEqualObjects(response.returnStatus, kTestRequestStatusDidLoad, @"request failed");
-        records = ((NSDictionary *)response.dataResponse)[SEARCH_RECORDS];
+        records = [self dictionaryFromResponse:response][SEARCH_RECORDS];
     }
     @finally {
         // now delete object
@@ -561,22 +576,22 @@ static NSException *authException = nil;
     request = [[SFRestAPI sharedInstance] requestForQuery:[NSString stringWithFormat:@"select Id, FirstName from Contact where LastName='%@'", lastName] apiVersion:kSFRestDefaultAPIVersion];
     response = [self sendSyncRequest:request];
     XCTAssertEqualObjects(response.returnStatus, kTestRequestStatusDidLoad, @"request failed");
-    NSArray *records = ((NSDictionary *)response.dataResponse)[RECORDS];
+    NSArray *records = [self dictionaryFromResponse:response][RECORDS];
     XCTAssertEqual((int)[records count], 0, @"expected no result");
-    
+
     // check the deleted object is here
     request = [[SFRestAPI sharedInstance] requestForQueryAll:[NSString stringWithFormat:@"select Id, FirstName from Contact where LastName='%@'", lastName] apiVersion:kSFRestDefaultAPIVersion];
     response = [self sendSyncRequest:request];
     XCTAssertEqualObjects(response.returnStatus, kTestRequestStatusDidLoad, @"request failed");
-    NSArray* records2 = ((NSDictionary *)response.dataResponse)[RECORDS];
+    NSArray* records2 = [self dictionaryFromResponse:response][RECORDS];
     XCTAssertEqual((int)[records2 count], 1, @"expected just one query result");
 
     // now search object
     request = [[SFRestAPI sharedInstance] requestForSearch:[NSString stringWithFormat:@"Find {%@}", lastName] apiVersion:kSFRestDefaultAPIVersion];
     response = [self sendSyncRequest:request];
     XCTAssertEqualObjects(response.returnStatus, kTestRequestStatusDidLoad, @"request failed");
-    records = ((NSDictionary *)response.dataResponse)[SEARCH_RECORDS];
-    
+    records = [self dictionaryFromResponse:response][SEARCH_RECORDS];
+
     XCTAssertEqual((int)[records count], 0, @"expected no result");
 }
 
@@ -683,15 +698,16 @@ static NSException *authException = nil;
      ];
      SFRestAPITestResponse *response = [self sendSyncRequest:createRequest];
      XCTAssertEqualObjects(response.returnStatus, kTestRequestStatusDidLoad, @"request should have succeeded");
-     NSString *accountId = ((NSDictionary *) response.dataResponse)[LID];
+     NSString *accountId = [self dictionaryFromResponse:response][LID];
 
      // Retrieve to get last modified date - expect updated name
      SFRestRequest *firstRetrieveRequest = [[SFRestAPI sharedInstance]
              requestForRetrieveWithObjectType:ACCOUNT objectId:accountId fieldList:@"Name,LastModifiedDate" apiVersion:kSFRestDefaultAPIVersion];
      response = [self sendSyncRequest:firstRetrieveRequest];
-     NSString *retrievedName = ((NSDictionary *) response.dataResponse)[NAME];
+     NSDictionary *firstRetrieveDict = [self dictionaryFromResponse:response];
+     NSString *retrievedName = firstRetrieveDict[NAME];
      XCTAssertEqualObjects(retrievedName, accountName, "wrong name retrieved");
-     NSString *lastModifiedDateStr = ((NSDictionary *) response.dataResponse)[@"LastModifiedDate"];
+     NSString *lastModifiedDateStr = firstRetrieveDict[@"LastModifiedDate"];
      NSDateFormatter *httpDateFormatter = [NSDateFormatter new];
      httpDateFormatter.dateFormat = @"EEE',' dd MMM yyyy HH':'mm':'ss 'GMT'";
      NSDate *createdDate = [httpDateFormatter dateFromString:lastModifiedDateStr];
@@ -715,7 +731,7 @@ static NSException *authException = nil;
      SFRestRequest *secondRetrieveRequest = [[SFRestAPI sharedInstance]
              requestForRetrieveWithObjectType:ACCOUNT objectId:accountId fieldList:NAME apiVersion:kSFRestDefaultAPIVersion];
      response = [self sendSyncRequest:secondRetrieveRequest];
-     NSString *secondRetrievedName = ((NSDictionary *) response.dataResponse)[NAME];
+     NSString *secondRetrievedName = [self dictionaryFromResponse:response][NAME];
      XCTAssertEqualObjects(secondRetrievedName, accountNameUpdated, "wrong name retrieved");
 
      // Second update with if-unmodified-since with created date - should not update
@@ -735,7 +751,7 @@ static NSException *authException = nil;
      SFRestRequest *thirdRetrieveRequest = [[SFRestAPI sharedInstance]
              requestForRetrieveWithObjectType:ACCOUNT objectId:accountId fieldList:NAME apiVersion:kSFRestDefaultAPIVersion];
      response = [self sendSyncRequest:thirdRetrieveRequest];
-     NSString *thirdRetrievedName = ((NSDictionary *) response.dataResponse)[NAME];
+     NSString *thirdRetrievedName = [self dictionaryFromResponse:response][NAME];
      XCTAssertEqualObjects(thirdRetrievedName, accountNameUpdated, "wrong name retrieved");
 }
 
