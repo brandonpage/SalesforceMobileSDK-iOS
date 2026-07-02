@@ -94,6 +94,12 @@ static SFOAuthCredentials *credentials = nil;
     // All of the setup and validation of prerequisite auth state is done in populateAuthCredentialsFromConfigFile.
     // Make sure that method has run before this one.
     NSAssert(credentials!=nil, @"You must call populateAuthCredentialsFromConfigFileForClass before synchronousAuthRefresh");
+
+    // Clear instanceUrl so that overrideDomainIfNeeded falls back to the login pool
+    // (credentials.domain) for the initial auth refresh. The server response will set
+    // instanceUrl correctly after a successful refresh.
+    credentials.instanceUrl = nil;
+
     __block SFSDKTestRequestListener *authListener = [[SFSDKTestRequestListener alloc] init];
     __block SFUserAccount *user = nil;
     [[SFUserAccountManager sharedInstance]
