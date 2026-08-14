@@ -55,6 +55,7 @@ NSString * const kSFAppFeatureLoginServerMyDomain          = @"L4";
 NSString * const kSFAppFeatureLoginServerOther             = @"L5";
 
 static NSMutableSet<NSString *> *SFSDKAppFeatureMarkersSet = nil;
+static NSCountedSet<NSString *> *SFSDKAuthSessionFeatureMarkers = nil;
 static dispatch_queue_t SFSDKAppFeatureDispatchQueue = nil;
 static NSMutableDictionary<NSString *, NSMutableSet<NSString *> *> *SFSDKPerUserFeatureMarkersMap = nil;
 
@@ -64,6 +65,9 @@ static NSMutableDictionary<NSString *, NSMutableSet<NSString *> *> *SFSDKPerUser
     if (self == [SFSDKAppFeatureMarkers class]) {
         if (SFSDKAppFeatureMarkersSet == nil) {
             SFSDKAppFeatureMarkersSet = [NSMutableSet set];
+        }
+        if (SFSDKAuthSessionFeatureMarkers == nil) {
+            SFSDKAuthSessionFeatureMarkers = [NSCountedSet set];
         }
         if (SFSDKAppFeatureDispatchQueue == nil) {
             SFSDKAppFeatureDispatchQueue = dispatch_queue_create("com.salesforce.mobilesdk.appFeaturesQueue", DISPATCH_QUEUE_SERIAL);
@@ -89,9 +93,23 @@ static NSMutableDictionary<NSString *, NSMutableSet<NSString *> *> *SFSDKPerUser
 + (NSSet *)appFeatures {
     __block NSSet *markersSet;
     dispatch_sync(SFSDKAppFeatureDispatchQueue, ^{
-        markersSet = [SFSDKAppFeatureMarkersSet copy];
+        NSMutableSet *all = [NSMutableSet setWithSet:SFSDKAppFeatureMarkersSet];
+        [all unionSet:[NSSet setWithArray:SFSDKAuthSessionFeatureMarkers.allObjects]];
+        markersSet = [all copy];
     });
     return markersSet;
+}
+
++ (void)registerAuthSessionFeature:(NSString *)appFeature {
+    dispatch_sync(SFSDKAppFeatureDispatchQueue, ^{
+        [SFSDKAuthSessionFeatureMarkers addObject:appFeature];
+    });
+}
+
++ (void)unregisterAuthSessionFeature:(NSString *)appFeature {
+    dispatch_sync(SFSDKAppFeatureDispatchQueue, ^{
+        [SFSDKAuthSessionFeatureMarkers removeObject:appFeature];
+    });
 }
 
 + (void)registerAppFeature:(NSString *)appFeature forUser:(SFUserAccount *)user {
@@ -135,6 +153,7 @@ static NSMutableDictionary<NSString *, NSMutableSet<NSString *> *> *SFSDKPerUser
     NSString *key = SFKeyForUserAndScope(user, SFUserAccountScopeUser);
     dispatch_sync(SFSDKAppFeatureDispatchQueue, ^{
         NSMutableSet *all = [NSMutableSet setWithSet:SFSDKAppFeatureMarkersSet];
+        [all unionSet:[NSSet setWithArray:SFSDKAuthSessionFeatureMarkers.allObjects]];
         NSSet *userSet = SFSDKPerUserFeatureMarkersMap[key];
         if (userSet) [all unionSet:userSet];
         combined = [all copy];

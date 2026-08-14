@@ -73,6 +73,50 @@ typedef NS_ENUM(NSUInteger, SFSDKUserAccountManagerErrorCode) {
 @end
 
 NS_ASSUME_NONNULL_BEGIN
+
+@interface SFSDKAuthSession (SceneAssociation)
+
+@property (nonatomic, assign, readonly) BOOL participatesInStandardWebSceneReassociation;
+@property (nonatomic, assign) BOOL authenticationRecoveryPending;
+@property (nonatomic, assign, readonly) BOOL forceAdvancedAuthenticationAtStart;
+@property (nonatomic, copy, readonly) NSSet<NSString *> *transientAuthFeatures;
+
+- (instancetype)initWith:(SFSDKAuthRequest *)request
+              credentials:(nullable SFOAuthCredentials *)creds
+            routingSceneId:(nullable NSString *)routingSceneId;
+- (void)captureStandardWebAuthIntentWithLoginHint:(nullable NSString *)loginHint
+                               frontDoorBridgeUrl:(nullable NSURL *)frontDoorBridgeUrl
+                                     codeVerifier:(nullable NSString *)codeVerifier;
+- (BOOL)associateWithSceneIfUnscoped:(nullable UIScene *)scene;
+- (void)markPresentationStarted;
+- (BOOL)performPresentationContinuation:(nullable void (^)(void))continuationBlock;
+- (void)revokePresentationContinuations;
+- (BOOL)claimAuthenticationStartup;
+- (void)cancelAuthenticationStartup;
+- (void)performClaimedAuthenticationStartup:(void (^)(void))startupBlock;
+- (void)appendAuthSuccessCallback:(nullable void (^)(SFOAuthInfo *, SFUserAccount *))successCallback
+                  failureCallback:(nullable void (^)(SFOAuthInfo *, NSError *))failureCallback;
+- (nullable void (^)(void))registerAuthSuccessCallback:(nullable void (^)(SFOAuthInfo *, SFUserAccount *))successCallback
+                                        failureCallback:(nullable void (^)(SFOAuthInfo *, NSError *))failureCallback;
+- (void)completeAuthenticationWithAuthInfo:(SFOAuthInfo *)authInfo userAccount:(SFUserAccount *)userAccount;
+- (void)completeAuthenticationWithAuthInfo:(SFOAuthInfo *)authInfo error:(NSError *)error;
+- (nullable id)beginAuthenticationRecoveryWithError:(NSError *)error;
+- (BOOL)claimAuthenticationRecoveryWithToken:(id)recoveryToken;
+- (BOOL)performClaimedAuthenticationRecoveryWithToken:(id)recoveryToken block:(nullable void (^)(void))block;
+- (void)revokeAuthenticationRecoveryClaim;
+- (nullable NSError *)endAuthenticationRecoveryWithToken:(id)recoveryToken;
+- (nullable NSError *)endPendingAuthenticationRecovery;
+- (BOOL)cancelPendingAuthenticationRecovery;
+- (void)releaseAuthCallbacks;
+- (void)setTransientAuthFeature:(NSString *)feature enabled:(BOOL)enabled;
+- (void)clearTransientAuthFeatures;
+- (BOOL)matchesStandardWebRequest:(SFSDKAuthRequest *)request
+                        loginHint:(nullable NSString *)loginHint
+               frontDoorBridgeUrl:(nullable NSURL *)frontDoorBridgeUrl
+                     codeVerifier:(nullable NSString *)codeVerifier;
+
+@end
+
 @interface SFUserAccountManager ()<SFOAuthCoordinatorDelegate, SFIdentityCoordinatorDelegate, SFSDKLoginHostDelegate, SFSDKUserSelectionViewDelegate, SFSDKLoginFlowSelectionViewDelegate, SFLoginViewControllerDelegate>
 {
     NSRecursiveLock *_accountsLock;
@@ -128,6 +172,10 @@ Set this block to handle presentation of the Authentication View Controller.
  recover the active login host when the current host fails to connect.
  */
 @property (nonatomic, copy, nullable) NSString *previousLoginHost;
+
+- (void)setAuthSession:(SFSDKAuthSession *)authSession forRoutingKey:(NSString *)routingKey;
+- (void)beforeIrreversibleHostRecoveryForSession:(SFSDKAuthSession *)session;
+- (void)beforeIrreversibleAuthenticationRecoveryRestartForSession:(SFSDKAuthSession *)session;
 
 - (void)setCurrentUserInternal:(SFUserAccount* _Nullable)user;
 
@@ -204,6 +252,14 @@ Set this block to handle presentation of the Authentication View Controller.
                         failure:(SFUserAccountManagerFailureCallbackBlock)failureBlock
              frontDoorBridgeUrl:(nullable NSURL * )frontDoorBridgeUrl
                    codeVerifier:(nullable NSString *)codeVerifier;
+
+- (BOOL)hasAuthenticatingSessionForScene:(nullable UIScene *)scene
+                                 request:(SFSDKAuthRequest *)request
+                               loginHint:(nullable NSString *)loginHint
+                      frontDoorBridgeUrl:(nullable NSURL *)frontDoorBridgeUrl
+                            codeVerifier:(nullable NSString *)codeVerifier
+                              completion:(nullable SFUserAccountManagerSuccessCallbackBlock)completionBlock
+                                 failure:(nullable SFUserAccountManagerFailureCallbackBlock)failureBlock;
 
 - (SFSDKAuthRequest *)defaultAuthRequest;
 

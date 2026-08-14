@@ -26,6 +26,25 @@
 //  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import Foundation
+import ObjectiveC
+
+private enum QrCodeLoginRequestAssociation {
+    static var key: UInt8 = 0
+}
+
+extension NSURL {
+    @objc var sfsdk_isQrCodeLoginRequest: Bool {
+        get {
+            objc_getAssociatedObject(self, &QrCodeLoginRequestAssociation.key) as? Bool ?? false
+        }
+        set {
+            objc_setAssociatedObject(self,
+                                     &QrCodeLoginRequestAssociation.key,
+                                     newValue,
+                                     .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+}
 
 public extension SalesforceLoginViewController {
     
@@ -50,7 +69,20 @@ public extension SalesforceLoginViewController {
         _ frontdoorBridgeUrlString: String,
         pkceCodeVerifier: String?
     ) {
+        loginWithFrontdoorBridgeUrl(frontdoorBridgeUrlString,
+                                    pkceCodeVerifier: pkceCodeVerifier,
+                                    isQrCodeLoginRequest: false)
+    }
+
+    private class func loginWithFrontdoorBridgeUrl(
+        _ frontdoorBridgeUrlString: String,
+        pkceCodeVerifier: String?,
+        isQrCodeLoginRequest: Bool
+    ) {
         guard let frontdoorBridgeUrl = URL(string: frontdoorBridgeUrlString) else { return }
+        if isQrCodeLoginRequest {
+            (frontdoorBridgeUrl as NSURL).sfsdk_isQrCodeLoginRequest = true
+        }
         
         // Stop current authentication attempt, if applicable, before starting the new one.
         UserAccountManager.shared.stopCurrentAuthentication { result in
@@ -86,10 +118,10 @@ public extension SalesforceLoginViewController {
         if let uiBridgeApiParameters = uiBridgeApiParametersFromQrCodeLoginUrl(
             qrCodeLoginUrl
         ) {
-            SFSDKAppFeatureMarkers.registerAppFeature(kSFAppFeatureQrCodeLogin)
             loginWithFrontdoorBridgeUrl(
                 uiBridgeApiParameters.frontdoorBridgeUrl,
-                pkceCodeVerifier: uiBridgeApiParameters.pkceCodeVerifier
+                pkceCodeVerifier: uiBridgeApiParameters.pkceCodeVerifier,
+                isQrCodeLoginRequest: true
             )
             return true
         } else {

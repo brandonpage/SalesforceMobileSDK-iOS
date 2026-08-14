@@ -30,6 +30,11 @@
 @property (strong, nonatomic) NSMutableDictionary *backingDictionary;
 @property (strong, nonatomic) dispatch_queue_t queue;
 
+- (BOOL)moveObject:(id)expectedObject
+           fromKey:(id<NSCopying>)oldKey
+             toKey:(id<NSCopying>)newKey
+ beforeMovingBlock:(BOOL (^)(id object))beforeMovingBlock;
+
 @end
 
 @implementation SFSDKSafeMutableDictionary
@@ -137,6 +142,29 @@
     });
 }
 
+- (BOOL)moveObject:(id)expectedObject
+           fromKey:(id<NSCopying>)oldKey
+             toKey:(id<NSCopying>)newKey
+ beforeMovingBlock:(BOOL (^)(id object))beforeMovingBlock {
+    if (expectedObject == nil || oldKey == nil || newKey == nil) {
+        [SFLogger w:[self class] format:@"Attempted to move nil object or key in safe dictionary"];
+        return NO;
+    }
+    __block BOOL moved = NO;
+    dispatch_barrier_sync(self.queue, ^{
+        id object = self.backingDictionary[oldKey];
+        id destinationObject = self.backingDictionary[newKey];
+        if (object != expectedObject || (destinationObject && destinationObject != expectedObject)) {
+            return;
+        }
+        if (beforeMovingBlock && !beforeMovingBlock(object)) {
+            return;
+        }
+        [self.backingDictionary removeObjectForKey:oldKey];
+        self.backingDictionary[newKey] = object;
+        moved = YES;
+    });
+    return moved;
+}
+
 @end
-
-

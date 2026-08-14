@@ -25,6 +25,15 @@
 @import XCTest;
 #import "SFSDKSafeMutableDictionary.h"
 
+@interface SFSDKSafeMutableDictionary (AtomicMoveTesting)
+
+- (BOOL)moveObject:(id)expectedObject
+           fromKey:(id<NSCopying>)oldKey
+             toKey:(id<NSCopying>)newKey
+ beforeMovingBlock:(BOOL (^)(id object))beforeMovingBlock;
+
+@end
+
 @interface SFSDKSafeMutableDictionaryTests : XCTestCase
 
 @property (strong, nonatomic) SFSDKSafeMutableDictionary *testDictionary;
@@ -62,6 +71,97 @@
             NSLog(@"Error occurred while waiting for expectations! Error: %@", error.localizedDescription);
         }
     }];
+}
+
+- (void)testMoveObjectForKey {
+    NSObject *object = [NSObject new];
+    [self.testDictionary setObject:object forKey:@"old-key"];
+
+    __block BOOL updateApplied = NO;
+    BOOL moved = [self.testDictionary moveObject:object
+                                         fromKey:@"old-key"
+                                           toKey:@"new-key"
+                               beforeMovingBlock:^BOOL(id storedObject) {
+        updateApplied = YES;
+        return storedObject == object;
+    }];
+
+    XCTAssertTrue(moved);
+    XCTAssertTrue(updateApplied);
+    XCTAssertNil([self.testDictionary objectForKey:@"old-key"]);
+    XCTAssertEqual([self.testDictionary objectForKey:@"new-key"], object);
+}
+
+- (void)testMoveObjectForKeyDoesNotMoveUnexpectedSourceObject {
+    NSObject *storedObject = [NSObject new];
+    [self.testDictionary setObject:storedObject forKey:@"old-key"];
+
+    BOOL moved = [self.testDictionary moveObject:[NSObject new]
+                                         fromKey:@"old-key"
+                                           toKey:@"new-key"
+                               beforeMovingBlock:nil];
+
+    XCTAssertFalse(moved);
+    XCTAssertEqual([self.testDictionary objectForKey:@"old-key"], storedObject);
+    XCTAssertNil([self.testDictionary objectForKey:@"new-key"]);
+}
+
+- (void)testMoveObjectForKeyDoesNotReplaceDestinationObject {
+    NSObject *sourceObject = [NSObject new];
+    NSObject *destinationObject = [NSObject new];
+    [self.testDictionary setObject:sourceObject forKey:@"old-key"];
+    [self.testDictionary setObject:destinationObject forKey:@"new-key"];
+
+    BOOL moved = [self.testDictionary moveObject:sourceObject
+                                         fromKey:@"old-key"
+                                           toKey:@"new-key"
+                               beforeMovingBlock:nil];
+
+    XCTAssertFalse(moved);
+    XCTAssertEqual([self.testDictionary objectForKey:@"old-key"], sourceObject);
+    XCTAssertEqual([self.testDictionary objectForKey:@"new-key"], destinationObject);
+}
+
+- (void)testMoveObjectForKeyDoesNotMoveMissingSourceObject {
+    NSObject *object = [NSObject new];
+
+    BOOL moved = [self.testDictionary moveObject:object
+                                         fromKey:@"old-key"
+                                           toKey:@"new-key"
+                               beforeMovingBlock:nil];
+
+    XCTAssertFalse(moved);
+    XCTAssertNil([self.testDictionary objectForKey:@"old-key"]);
+    XCTAssertNil([self.testDictionary objectForKey:@"new-key"]);
+}
+
+- (void)testMoveObjectForKeyDoesNotMoveWhenBlockRejectsObject {
+    NSObject *object = [NSObject new];
+    [self.testDictionary setObject:object forKey:@"old-key"];
+
+    BOOL moved = [self.testDictionary moveObject:object
+                                         fromKey:@"old-key"
+                                           toKey:@"new-key"
+                               beforeMovingBlock:^BOOL(id storedObject) {
+        return NO;
+    }];
+
+    XCTAssertFalse(moved);
+    XCTAssertEqual([self.testDictionary objectForKey:@"old-key"], object);
+    XCTAssertNil([self.testDictionary objectForKey:@"new-key"]);
+}
+
+- (void)testMoveObjectForKeySupportsSameSourceAndDestinationKey {
+    NSObject *object = [NSObject new];
+    [self.testDictionary setObject:object forKey:@"same-key"];
+
+    BOOL moved = [self.testDictionary moveObject:object
+                                         fromKey:@"same-key"
+                                           toKey:@"same-key"
+                               beforeMovingBlock:nil];
+
+    XCTAssertTrue(moved);
+    XCTAssertEqual([self.testDictionary objectForKey:@"same-key"], object);
 }
 
 #pragma Mark - Helper Methods

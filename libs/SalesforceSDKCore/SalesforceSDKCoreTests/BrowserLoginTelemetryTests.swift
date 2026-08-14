@@ -92,6 +92,17 @@ class BrowserLoginTelemetryTests: XCTestCase {
                        "sdk_forceAdvancedAuthentication=YES without MDM/LFA should produce B4")
     }
 
+    func test_givenForceFlagEnabledAtSessionStart_whenFlagChangesBeforeCompletion_thenB4Returned() {
+        setForceAdvancedAuthentication(true)
+        let session = makeSession(loginAsAdmin: false, useBrowserAuth: false)
+
+        setForceAdvancedAuthentication(false)
+
+        let marker = accountManager.computeBMarker(for: session, completedAuthType: .advancedBrowser)
+        XCTAssertEqual(marker, kSFAppFeatureBrowserLoginForceFlag,
+                       "B attribution must use the force-advanced-authentication value captured when the session started")
+    }
+
     /// B1: server auth-config required browser login (no other reasons set).
     func test_givenBrowserLoginViaServerAuthConfig_whenAuthCompletes_thenB1Returned() {
         setForceAdvancedAuthentication(false)

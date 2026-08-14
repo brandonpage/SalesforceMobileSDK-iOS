@@ -54,6 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithAuthSession:(SFSDKAuthSession *)authSession;
 
+- (void)beginAuthenticationWithCredentials:(SFOAuthCredentials *)credentials;
+
 /** UpdateCredentials and record changes to instanceUrl,accessToken,communityId
   @param params NV pairs received from token endpoint.
  */

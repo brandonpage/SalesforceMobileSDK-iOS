@@ -156,7 +156,7 @@
 
 - (BOOL)handleIdpRequest:(SFSDKIDPAuthCodeLoginRequestCommand *_Nonnull)response sceneId:(nullable NSString *)sceneId completion:(nullable SFUserAccountManagerSuccessCallbackBlock)completionBlock
                  failure:(nullable SFUserAccountManagerFailureCallbackBlock)failureBlock {
-    [SFSDKCoreLogger d:[self class] format:@"handleIdpRequest for %@", [response.allParams description]];
+    [SFSDKCoreLogger d:[self class] format:@"Handling IDP authentication request."];
 
 
     if (!sceneId) {
@@ -183,10 +183,12 @@
         // We don't have that user - let's create a auth session to login using the code
         SFSDKAuthRequest *request = [self defaultAuthRequest];
         request.idpInitiatedAuth = YES;
-        SFSDKAuthSession *authSession = [[SFSDKAuthSession alloc] initWith:request credentials:nil];
+        SFSDKAuthSession *authSession = [[SFSDKAuthSession alloc] initWith:request
+                                                               credentials:nil
+                                                             routingSceneId:sceneId];
         authSession.authFailureCallback = failureBlock;
         authSession.authSuccessCallback = completionBlock;
-        self.authSessions[sceneId] = authSession;
+        [self setAuthSession:authSession forRoutingKey:sceneId];
         [self.authSessions[sceneId].oauthCoordinator handleIDPAuthenticationResponse:[response requestURL]];
         authSession.isAuthenticating = YES;
         authSession.oauthCoordinator.delegate = self;

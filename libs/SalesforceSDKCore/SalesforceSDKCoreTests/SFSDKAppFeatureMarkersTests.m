@@ -27,6 +27,9 @@
 #import "SFUserAccount.h"
 #import "SFOAuthCredentials.h"
 #import "SFOAuthCredentials+Internal.h"
+#import "SFSDKAuthSession.h"
+#import "SFSDKAuthRequest.h"
+#import "SFUserAccountManager+Internal.h"
 
 @interface SFSDKAppFeatureMarkersTests : XCTestCase
 
@@ -381,10 +384,55 @@
     XCTAssertTrue([[SFSDKAppFeatureMarkers appFeaturesForUser:self.userA] containsObject:kSFAppFeatureAppAttestation],
                   @"AA should be promoted to per-user on non-refresh login when attestation was used");
     XCTAssertFalse([[SFSDKAppFeatureMarkers appFeatures] containsObject:kSFAppFeatureAppAttestation],
-                   @"Global AA should be cleared after non-refresh promotion");
+                    @"Global AA should be cleared after non-refresh promotion");
+}
+
+- (void)test_givenDirectRegistrationDuringSessionOwnership_whenSessionClears_thenDirectMarkerSurvives {
+    NSString *feature = @"SessionAndDirectOwnership";
+    SFSDKAuthSession *session = [self transientFeatureSession];
+
+    [session setTransientAuthFeature:feature enabled:YES];
+    [SFSDKAppFeatureMarkers registerAppFeature:feature];
+    [session clearTransientAuthFeatures];
+
+    XCTAssertTrue([[SFSDKAppFeatureMarkers appFeatures] containsObject:feature],
+                  @"A direct idempotent registration made during session ownership must survive session cleanup");
+    [SFSDKAppFeatureMarkers unregisterAppFeature:feature];
+}
+
+- (void)test_givenConcurrentSessionEnableAndClear_whenOperationsFinish_thenLocalAndGlobalOwnershipAgree {
+    NSString *feature = @"ConcurrentSessionOwnership";
+    for (NSUInteger iteration = 0; iteration < 250; iteration++) {
+        SFSDKAuthSession *session = [self transientFeatureSession];
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
+        dispatch_group_async(group, queue, ^{
+            [session setTransientAuthFeature:feature enabled:YES];
+        });
+        dispatch_group_async(group, queue, ^{
+            [session clearTransientAuthFeatures];
+        });
+        XCTAssertEqual(dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC)), 0l);
+
+        BOOL locallyOwned = [session.transientAuthFeatures containsObject:feature];
+        BOOL globallyVisible = [[SFSDKAppFeatureMarkers appFeatures] containsObject:feature];
+        XCTAssertEqual(locallyOwned, globallyVisible,
+                       @"A session transition and its counted marker transition must be serialized (iteration %lu)",
+                       (unsigned long)iteration);
+        [session clearTransientAuthFeatures];
+        [SFSDKAppFeatureMarkers unregisterAppFeature:feature];
+    }
 }
 
 #pragma mark - Private helpers
+
+- (SFSDKAuthSession *)transientFeatureSession {
+    SFSDKAuthRequest *request = [SFSDKAuthRequest new];
+    request.oauthClientId = @"test-client-id";
+    request.oauthCompletionUrl = @"testapp://callback";
+    request.loginHost = @"login.salesforce.com";
+    return [[SFSDKAuthSession alloc] initWith:request credentials:nil];
+}
 
 - (SFUserAccount *)fakeUserWithOrgId:(NSString *)orgId userId:(NSString *)userId credentialsIdentifier:(NSString *)identifier {
     SFOAuthCredentials *credentials = [[SFOAuthCredentials alloc] initWithIdentifier:identifier

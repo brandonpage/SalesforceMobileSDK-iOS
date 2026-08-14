@@ -36,12 +36,13 @@
 static NSString * const kBogusHost = @"bogus.example.com";
 static NSString * const kBogusLabel = @"Bogus Test Host";
 static NSString * const kBuiltInProductionHost = @"login.salesforce.com";
+static NSString * const kSurvivingFallbackHost = @"fallback.example.com";
 
 @interface SFUserAccountManagerLoginHostRecoveryTests : XCTestCase
 // Stand-in implementation swapped into restartAuthentication: for the lifetime of each test.
 // Mirrors the SFSDKLogoutBlocker pattern (libs/.../SFSDKLogoutBlocker.m) but scoped to this file
 // so we don't disturb other test classes that rely on the real OAuth restart path.
-- (void)dummy_restartAuthentication:(SFSDKAuthSession *)session;
+- (void)dummy_restartAuthentication:(SFSDKAuthSession *)session recoveryToken:(id)recoveryToken;
 @end
 
 // File-static counter so the swizzled instance method (which runs as if on SFUserAccountManager,
@@ -68,12 +69,12 @@ static NSUInteger gRestartAuthenticationCallCount = 0;
 // for the duration of each test and restore it in tearDown. The handler still runs end-to-end
 // (recovery + storage cleanup), but the OAuth restart side-effect becomes a deterministic no-op.
 - (void)swapRestartAuthentication {
-    Method original = class_getInstanceMethod([SFUserAccountManager class], @selector(restartAuthentication:));
-    Method replacement = class_getInstanceMethod([self class], @selector(dummy_restartAuthentication:));
+    Method original = class_getInstanceMethod([SFUserAccountManager class], NSSelectorFromString(@"restartAuthentication:recoveryToken:"));
+    Method replacement = class_getInstanceMethod([self class], @selector(dummy_restartAuthentication:recoveryToken:));
     method_exchangeImplementations(original, replacement);
 }
 
-- (void)dummy_restartAuthentication:(SFSDKAuthSession *)session {
+- (void)dummy_restartAuthentication:(SFSDKAuthSession *)session recoveryToken:(id)recoveryToken {
     // Intentional no-op except for counting invocations. See -swapRestartAuthentication for rationale.
     // Counted via a file-static so tests can assert whether the recovery branch fired.
     gRestartAuthenticationCallCount++;
@@ -110,6 +111,7 @@ static NSUInteger gRestartAuthenticationCallCount = 0;
 
     SFSDKLoginHostStorage *storage = [SFSDKLoginHostStorage sharedInstance];
     [self removeHostIfPresent:kBogusHost fromStorage:storage];
+    [self removeHostIfPresent:kSurvivingFallbackHost fromStorage:storage];
 
     [super tearDown];
 }
@@ -172,6 +174,7 @@ static NSUInteger gRestartAuthenticationCallCount = 0;
 /// so we never present a real alert and the recovery logic runs deterministically.
 - (void)fireHandlerBlockForSession:(SFSDKAuthSession *)session withError:(NSError *)error {
     SFUserAccountManager *mgr = [SFUserAccountManager sharedInstance];
+    mgr.authSessions[session.sceneId] = session;
     XCTestExpectation *completionRan = [self expectationWithDescription:@"alertCompletionRan"];
     mgr.alertDisplayBlock = ^(SFSDKAlertMessage *message, SFSDKWindowContainer *window) {
         if (message.actionOneCompletion) {
@@ -181,6 +184,10 @@ static NSUInteger gRestartAuthenticationCallCount = 0;
     };
     mgr.errorManager.hostConnectionErrorHandlerBlock(error, session, @{});
     [self waitForExpectations:@[completionRan] timeout:5.0];
+    [session cancelPendingAuthenticationRecovery];
+    if (mgr.authSessions[session.sceneId] == session) {
+        [mgr.authSessions removeObject:session.sceneId];
+    }
 }
 
 - (void)fireHandlerBlockForSession:(SFSDKAuthSession *)session {
@@ -251,6 +258,29 @@ static NSUInteger gRestartAuthenticationCallCount = 0;
     [self fireHandlerBlockForSession:session withError:[self makeStrongBadHostError]];
 
     XCTAssertNil([storage loginHostForHostAddress:kBogusHost]);
+}
+
+- (void)test_givenStronglyInvalidDeletableHostIsFirstCandidate_whenRecovered_thenRestartUsesDifferentSurvivingHost {
+    SFUserAccountManager *mgr = [SFUserAccountManager sharedInstance];
+    mgr.previousLoginHost = nil;
+    mgr.loginHost = kBogusHost;
+    SFSDKLoginHostStorage *storage = [SFSDKLoginHostStorage sharedInstance];
+    NSMutableArray *originalList = [storage valueForKey:@"loginHostList"];
+    NSMutableArray *snapshot = [originalList mutableCopy];
+    [self addTeardownBlock:^{
+        [storage setValue:snapshot forKey:@"loginHostList"];
+    }];
+    SFSDKLoginHost *failing = [SFSDKLoginHost hostWithName:kBogusLabel host:kBogusHost deletable:YES];
+    SFSDKLoginHost *fallback = [SFSDKLoginHost hostWithName:@"Fallback Test Host" host:kSurvivingFallbackHost deletable:YES];
+    [storage setValue:[NSMutableArray arrayWithObjects:failing, fallback, nil] forKey:@"loginHostList"];
+
+    SFSDKAuthSession *session = [self makeAuthSessionForLoginHost:kBogusHost];
+    [self fireHandlerBlockForSession:session withError:[self makeStrongBadHostError]];
+
+    XCTAssertNil([storage loginHostForHostAddress:kBogusHost]);
+    XCTAssertEqualObjects(mgr.loginHost, kSurvivingFallbackHost,
+                          @"Recovery must select a surviving host after excluding the strongly invalid host");
+    XCTAssertEqual(gRestartAuthenticationCallCount, 1u);
 }
 
 - (void)test_givenDeletableFailingHostAndAmbiguousSignal_when_handlerCompletionRuns_then_failingHostKeptInStorage {

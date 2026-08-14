@@ -37,6 +37,18 @@
 #import "SFApplicationHelper.h"
 #import <SalesforceSDKCore/SalesforceSDKCore-Swift.h>
 
+@interface SFSDKAuthHelper (LoginAttempt)
+
++ (void)attemptLoginWithAccountManager:(SFUserAccountManager *)accountManager
+                                 scene:(UIScene *)scene
+                             loginHint:(NSString *)loginHint
+                             loginHost:(NSString *)loginHost
+                    frontDoorBridgeUrl:(NSURL *)frontDoorBridgeUrl
+                          codeVerifier:(NSString *)codeVerifier
+                            completion:(void (^)(void))completionBlock;
+
+@end
+
 @implementation SFSDKAuthHelper
 
 + (void)loginIfRequired:(void (^)(void))completionBlock {
@@ -79,39 +91,42 @@
         scene = [[SFSDKWindowManager sharedManager] defaultScene];
     }
     
-    [SFSDKAuthHelper registerBlockForLoginNotification:^{
-        if (completionBlock) {
-            completionBlock();
-        }
-    }];
-
     if (frontDoorBridgeUrl || [self isDeepLink:loginHost] || [self shouldAuthenticateNewUser]) {
-        SFUserAccountManagerFailureCallbackBlock failureBlock = ^(SFOAuthInfo *authInfo, NSError *authError) {
-            [SFSDKCoreLogger e:[self class] format:@"Authentication failed: %@.", [authError localizedDescription]];
-        };
-        BOOL result = [[SFUserAccountManager sharedInstance]
-                       loginWithCompletion:nil
-                       failure:failureBlock
-                       scene:scene
-                       loginHint:loginHint
-                       loginHost:loginHost
-                       frontDoorBridgeUrl:frontDoorBridgeUrl
-                       codeVerifier:codeVerifier];
-        if (!result) {
-            [[SFUserAccountManager sharedInstance] stopCurrentAuthentication:^(BOOL result) {
-                [[SFUserAccountManager sharedInstance]
-                 loginWithCompletion:nil
-                 failure:failureBlock
-                 scene:scene
-                 loginHint:loginHint
-                 loginHost:loginHost
-                 frontDoorBridgeUrl:frontDoorBridgeUrl
-                 codeVerifier:codeVerifier];
-            }];
-        }
+        [self attemptLoginWithAccountManager:[SFUserAccountManager sharedInstance]
+                                       scene:scene
+                                   loginHint:loginHint
+                                   loginHost:loginHost
+                          frontDoorBridgeUrl:frontDoorBridgeUrl
+                                codeVerifier:codeVerifier
+                                  completion:completionBlock];
     } else {
         [self screenLockValidation:completionBlock];
     }
+}
+
++ (void)attemptLoginWithAccountManager:(SFUserAccountManager *)accountManager
+                                 scene:(UIScene *)scene
+                             loginHint:(NSString *)loginHint
+                             loginHost:(NSString *)loginHost
+                    frontDoorBridgeUrl:(NSURL *)frontDoorBridgeUrl
+                          codeVerifier:(NSString *)codeVerifier
+                            completion:(void (^)(void))completionBlock {
+    SFUserAccountManagerSuccessCallbackBlock successBlock = nil;
+    if (completionBlock) {
+        successBlock = ^(SFOAuthInfo *authInfo, SFUserAccount *userAccount) {
+            completionBlock();
+        };
+    }
+    SFUserAccountManagerFailureCallbackBlock failureBlock = ^(SFOAuthInfo *authInfo, NSError *authError) {
+        [SFSDKCoreLogger e:[self class] format:@"Authentication failed: %@.", [authError localizedDescription]];
+    };
+    [accountManager loginWithCompletion:successBlock
+                                failure:failureBlock
+                                  scene:scene
+                              loginHint:loginHint
+                              loginHost:loginHost
+                     frontDoorBridgeUrl:frontDoorBridgeUrl
+                           codeVerifier:codeVerifier];
 }
 
 + (BOOL)isDeepLink:(NSString *)host {
@@ -176,14 +191,6 @@
             [self loginIfRequired:scene completion:completionBlock];
         }
     }
-}
-
-+ (void)registerBlockForLoginNotification:(void (^)(void))completionBlock {
-    [[NSNotificationCenter defaultCenter] addObserverForName:kSFNotificationUserDidLogIn object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * note) {
-           if (completionBlock) {
-               completionBlock();
-           }
-       }];
 }
 
 + (void)registerBlockForCurrentUserChangeNotifications:(void (^)(void))completionBlock {

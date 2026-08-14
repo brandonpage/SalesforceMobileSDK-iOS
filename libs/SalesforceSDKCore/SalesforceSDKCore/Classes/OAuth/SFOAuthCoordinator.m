@@ -57,6 +57,7 @@
 #import <LocalAuthentication/LocalAuthentication.h>
 #import "SFSDKResourceUtils.h"
 #import "SFSDKAuthErrorManager+Internal.h"
+#import "SFUserAccountManager+Internal.h"
 
 @interface SFOAuthCoordinator()
 
@@ -152,7 +153,11 @@
          self.credentials.protocol, self.credentials.domain];
     self.authenticating = YES;
     if ([SFUserAccountManager sharedInstance].appAttestationEnabled) {
-        [SFSDKAppFeatureMarkers registerAppFeature:kSFAppFeatureAppAttestation];
+        if (self.authSession) {
+            [self.authSession setTransientAuthFeature:kSFAppFeatureAppAttestation enabled:YES];
+        } else {
+            [SFSDKAppFeatureMarkers registerAppFeature:kSFAppFeatureAppAttestation];
+        }
     }
     if (self.credentials.refreshToken) {
         self.authInfo = [[SFOAuthInfo alloc] initWithAuthType:SFOAuthTypeRefresh];
@@ -192,12 +197,21 @@
                 [strongSelf beginHeadlessNativeLoginFlow];
             });
         } else if (!self.frontdoorBridgeLoginOverride && self.useBrowserAuth) {
-            [SFSDKAppFeatureMarkers registerAppFeature:kSFAppFeatureSafariBrowserForLogin];
+            if (self.authSession) {
+                [self.authSession setTransientAuthFeature:kSFAppFeatureSafariBrowserForLogin enabled:YES];
+            } else {
+                [SFSDKAppFeatureMarkers registerAppFeature:kSFAppFeatureSafariBrowserForLogin];
+            }
             dispatch_async(dispatch_get_main_queue(), ^{
                 __strong typeof(weakSelf) strongSelf = weakSelf;
-                strongSelf.authInfo = [[SFOAuthInfo alloc] initWithAuthType:SFOAuthTypeAdvancedBrowser];
-                [strongSelf notifyDelegateOfBeginAuthentication];
-                [strongSelf beginNativeBrowserFlowWithSharedBrowserSessionEnabled:false];
+                if (strongSelf.authSession && ![strongSelf.authSession performPresentationContinuation:^{
+                    [strongSelf continueForcedBrowserAuthentication];
+                }]) {
+                    return;
+                }
+                if (!strongSelf.authSession) {
+                    [strongSelf continueForcedBrowserAuthentication];
+                }
             });
         } else {
             NSString *loginDomain = self.credentials.domain;
@@ -207,32 +221,13 @@
             [SFSDKAuthConfigUtil getMyDomainAuthConfig:^(SFOAuthOrgAuthConfiguration *authConfig, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    // A prefetch error against an unreachable login host is the earliest
-                    // authoritative signal that the host itself is bad. Falling through to
-                    // beginWebViewFlow would dispatch a WKWebView load against the same host
-                    // and hang silently, stranding the user on a blank screen and leaving the
-                    // bad host set as the sticky loginHost across app restarts. Surface it to
-                    // the failure delegate so the error manager's hostConnectionErrorHandler
-                    // can present an alert and roll loginHost back to the previous good host.
-                    // Non-host errors (parse failures, non-2xx responses, endpoint absent on
-                    // standard orgs) continue to fall through — auth-config is optional.
-                    if ([SFSDKAuthErrorManager errorIsHostConnectionFailure:error]) {
-                        [strongSelf notifyDelegateOfFailure:error authInfo:strongSelf.authInfo];
+                    if (strongSelf.authSession && ![strongSelf.authSession performPresentationContinuation:^{
+                        [strongSelf continueStandardWebAuthenticationWithAuthConfig:authConfig error:error];
+                    }]) {
                         return;
                     }
-                    if (!self.frontdoorBridgeLoginOverride &&
-                        (authConfig.useNativeBrowserForAuth ||
-                         [SalesforceSDKManager sharedManager].sdk_forceAdvancedAuthentication)) {
-                        [SFSDKAppFeatureMarkers registerAppFeature:kSFAppFeatureSafariBrowserForLogin];
-                        strongSelf.authInfo = [[SFOAuthInfo alloc] initWithAuthType:SFOAuthTypeAdvancedBrowser];
-                        [strongSelf notifyDelegateOfBeginAuthentication];
-                        // shareBrowserSession is honored for My Domain; nil-messaging yields false
-                        // for standard servers, which is the correct default there.
-                        [strongSelf beginNativeBrowserFlowWithSharedBrowserSessionEnabled:authConfig.shareBrowserSession];
-                    } else {
-                        [SFSDKAppFeatureMarkers unregisterAppFeature:kSFAppFeatureSafariBrowserForLogin];
-                        [strongSelf notifyDelegateOfBeginAuthentication];
-                        [strongSelf beginWebViewFlow];
+                    if (!strongSelf.authSession) {
+                        [strongSelf continueStandardWebAuthenticationWithAuthConfig:authConfig error:error];
                     }
                 });
             } loginDomain:loginDomain];
@@ -240,21 +235,92 @@
     }
 }
 
+- (void)continueForcedBrowserAuthentication {
+    self.authInfo = [[SFOAuthInfo alloc] initWithAuthType:SFOAuthTypeAdvancedBrowser];
+    [self notifyDelegateOfBeginAuthentication];
+    [self beginNativeBrowserFlowWithSharedBrowserSessionEnabled:false];
+}
+
+- (void)continueStandardWebAuthenticationWithAuthConfig:(SFOAuthOrgAuthConfiguration *)authConfig error:(NSError *)error {
+    // A prefetch error against an unreachable login host is the earliest
+    // authoritative signal that the host itself is bad. Falling through to
+    // beginWebViewFlow would dispatch a WKWebView load against the same host
+    // and hang silently, stranding the user on a blank screen and leaving the
+    // bad host set as the sticky loginHost across app restarts. Surface it to
+    // the failure delegate so the error manager's hostConnectionErrorHandler
+    // can present an alert and roll loginHost back to the previous good host.
+    // Non-host errors (parse failures, non-2xx responses, endpoint absent on
+    // standard orgs) continue to fall through — auth-config is optional.
+    if ([SFSDKAuthErrorManager errorIsHostConnectionFailure:error]) {
+        [self notifyDelegateOfFailure:error authInfo:self.authInfo];
+        return;
+    }
+    if (!self.frontdoorBridgeLoginOverride &&
+        (authConfig.useNativeBrowserForAuth ||
+         [SalesforceSDKManager sharedManager].sdk_forceAdvancedAuthentication)) {
+        if (self.authSession) {
+            [self.authSession setTransientAuthFeature:kSFAppFeatureSafariBrowserForLogin enabled:YES];
+        } else {
+            [SFSDKAppFeatureMarkers registerAppFeature:kSFAppFeatureSafariBrowserForLogin];
+        }
+        self.authInfo = [[SFOAuthInfo alloc] initWithAuthType:SFOAuthTypeAdvancedBrowser];
+        [self notifyDelegateOfBeginAuthentication];
+        // shareBrowserSession is honored for My Domain; nil-messaging yields false
+        // for standard servers, which is the correct default there.
+        [self beginNativeBrowserFlowWithSharedBrowserSessionEnabled:authConfig.shareBrowserSession];
+    } else {
+        if (self.authSession) {
+            [self.authSession setTransientAuthFeature:kSFAppFeatureSafariBrowserForLogin enabled:NO];
+        } else {
+            [SFSDKAppFeatureMarkers unregisterAppFeature:kSFAppFeatureSafariBrowserForLogin];
+        }
+        [self notifyDelegateOfBeginAuthentication];
+        [self beginWebViewFlow];
+    }
+}
+
 - (void)authenticateWithCredentials:(SFOAuthCredentials *)credentials {
+    if (!self.authSession) {
+        [self beginAuthenticationWithCredentials:credentials];
+        return;
+    }
+    [self.authSession performClaimedAuthenticationStartup:^{
+        [self beginAuthenticationWithCredentials:credentials];
+    }];
+}
+
+- (void)beginAuthenticationWithCredentials:(SFOAuthCredentials *)credentials {
     self.credentials = credentials;
     if ([SFDomainDiscoveryCoordinator isDiscoveryDomain:self.credentials.domain]) {
-        [SFSDKAppFeatureMarkers registerAppFeature:kSFAppFeatureWelcomeDiscovery];
+        if (self.authSession) {
+            [self.authSession setTransientAuthFeature:kSFAppFeatureWelcomeDiscovery enabled:YES];
+        } else {
+            [SFSDKAppFeatureMarkers registerAppFeature:kSFAppFeatureWelcomeDiscovery];
+        }
         [self runMyDomainDiscoveryAndAuthenticate];
         return;
     } else {
-        [SFSDKAppFeatureMarkers unregisterAppFeature:kSFAppFeatureWelcomeDiscovery];
+        if (self.authSession) {
+            [self.authSession setTransientAuthFeature:kSFAppFeatureWelcomeDiscovery enabled:NO];
+        } else {
+            [SFSDKAppFeatureMarkers unregisterAppFeature:kSFAppFeatureWelcomeDiscovery];
+        }
     }
     [self authenticate];
 }
 
 - (void)runMyDomainDiscoveryAndAuthenticate {
-    [self startWebviewAuthenticationIfNeeded];
-    [self.domainDiscoveryCoordinator runMyDomainsDiscoveryOn:self.view with:self.credentials];
+    if (self.authSession && ![self.authSession performPresentationContinuation:^{
+        [self.authSession markPresentationStarted];
+        [self startWebviewAuthenticationIfNeeded];
+        [self.domainDiscoveryCoordinator runMyDomainsDiscoveryOn:self.view with:self.credentials];
+    }]) {
+        return;
+    }
+    if (!self.authSession) {
+        [self startWebviewAuthenticationIfNeeded];
+        [self.domainDiscoveryCoordinator runMyDomainsDiscoveryOn:self.view with:self.credentials];
+    }
 }
 
 - (BOOL)isAuthenticating {
@@ -439,6 +505,17 @@
         });
         return;
     }
+    if (self.authSession) {
+        [self.authSession performPresentationContinuation:^{
+            [self presentNativeBrowserFlowWithSharedBrowserSessionEnabled:shareBrowserSession];
+        }];
+        return;
+    }
+    [self presentNativeBrowserFlowWithSharedBrowserSessionEnabled:shareBrowserSession];
+}
+
+- (void)presentNativeBrowserFlowWithSharedBrowserSessionEnabled:(BOOL)shareBrowserSession {
+    [self.authSession markPresentationStarted];
     NSString *approvalUrl = [self approvalURLForEndpoint:[self brandedAuthorizeURL]
                                              credentials:self.credentials
                                            webServerFlow:YES
@@ -454,7 +531,11 @@
     // Launch the native browser.
     [SFSDKCoreLogger d:[self class] format:@"%@: Initiating native browser flow with URL %@", NSStringFromSelector(_cmd), approvalUrl];
     NSURL *nativeBrowserUrl = [NSURL URLWithString:approvalUrl];
-    [SFSDKAppFeatureMarkers registerAppFeature:kSFAppFeatureSafariBrowserForLogin];
+    if (self.authSession) {
+        [self.authSession setTransientAuthFeature:kSFAppFeatureSafariBrowserForLogin enabled:YES];
+    } else {
+        [SFSDKAppFeatureMarkers registerAppFeature:kSFAppFeatureSafariBrowserForLogin];
+    }
     __weak typeof(self) weakSelf = self;
     _asWebAuthenticationSession = [[ASWebAuthenticationSession alloc] initWithURL:nativeBrowserUrl callbackURLScheme:[NSURL URLWithString:self.credentials.redirectUri].scheme completionHandler:^(NSURL *callbackURL, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -483,6 +564,17 @@
         });
         return;
     }
+    if (self.authSession) {
+        [self.authSession performPresentationContinuation:^{
+            [self presentWebViewFlow];
+        }];
+        return;
+    }
+    [self presentWebViewFlow];
+}
+
+- (void)presentWebViewFlow {
+    [self.authSession markPresentationStarted];
     self.initialRequestLoaded = NO;
     
     // notify delegate will be begin authentication in our (web) vew
